@@ -1,15 +1,29 @@
-PREFIX=${PARSECDIR}/pkgs/apps/fluidanimate/inst/${PARSECPLAT}
-TARGET=fluidanimate
+include ../Makefile.inc
+
+TARGET   = $(platform)fluidanimate
+OBJS     = pthreads.o cellpool.o parsec_barrier.o
 
 CXXFLAGS += -Wno-invalid-offsetof
+CXXFLAGS += -pthread -D_GNU_SOURCE -D__XOPEN_SOURCE=600
 
-all:
-	$(MAKE) -f Makefile.${version} all
+# To enable visualization comment out the following lines (don't do this for benchmarking)
+#OBJS     += fluidview.o
+#CXXFLAGS += -DENABLE_VISUALIZATION
+#LIBS     += -lglut
+
+all: clean pthreads fluidcmp
+
+pthreads: $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+
+%.o : %.cpp
+	$(CXX) $(CXXFLAGS) -c $<
+
+fluidcmp: fluidcmp.cpp
+	rm -rf fluidcmp
+	$(CXX) $(CXXFLAGS) fluidcmp.cpp -o fluidcmp
 
 clean:
-	$(MAKE) -f Makefile.${version} clean
-
-install:
-	mkdir -p $(PREFIX)/bin
-	cp -f $(TARGET) $(PREFIX)/bin
-	cp -f fluidcmp $(PREFIX)/bin
+	rm -rf $(TARGET)
+	rm -rf fluidcmp
+	rm -rf *.o
