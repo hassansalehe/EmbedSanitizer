@@ -20,7 +20,30 @@
 #ifdef ENABLE_THREADS
 // Add the following line so that icc 9.0 is compatible with pthread lib.
 #define __thread __threadp
-MAIN_ENV
+
+#ifdef _XOPEN_SOURCE
+#undef _XOPEN_SOURCE
+#define _XOPEN_SOURCE 700
+#endif
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#ifndef __USE_XOPEN2K
+#define __USE_XOPEN2K
+#endif
+#ifndef __USE_UNIX98
+#define __USE_UNIX98
+#endif
+#include <pthread.h>
+#include <time.h>
+
+#define MAX_THREADS 128
+
+pthread_t _M4_threadsTable[MAX_THREADS];
+int _M4_threadsTableAllocated[MAX_THREADS];
+pthread_mutexattr_t _M4_normalMutexAttr;
+int _M4_numThreads = MAX_THREADS;
+
 #undef __thread
 #endif
 
@@ -346,12 +369,12 @@ int main (int argc, char **argv)
     //Read input data from file
     file = fopen(inputFile, "r");
     if(file == NULL) {
-      printf("ERROR: Unable to open file `%s'.\n", inputFile);
+      printf("ERROR: Unable to open file %s.\n", inputFile);
       exit(1);
     }
     rv = fscanf(file, "%i", &numOptions);
     if(rv != 1) {
-      printf("ERROR: Unable to read from file `%s'.\n", inputFile);
+      printf("ERROR: Unable to read from file %s.\n", inputFile);
       fclose(file);
       exit(1);
     }
@@ -374,19 +397,29 @@ int main (int argc, char **argv)
     {
         rv = fscanf(file, "%f %f %f %f %f %f %c %f %f", &data[loopnum].s, &data[loopnum].strike, &data[loopnum].r, &data[loopnum].divq, &data[loopnum].v, &data[loopnum].t, &data[loopnum].OptionType, &data[loopnum].divs, &data[loopnum].DGrefval);
         if(rv != 9) {
-          printf("ERROR: Unable to read from file `%s'.\n", inputFile);
+          printf("ERROR: Unable to read from file %s.\n", inputFile);
           fclose(file);
           exit(1);
         }
     }
     rv = fclose(file);
     if(rv != 0) {
-      printf("ERROR: Unable to close file `%s'.\n", inputFile);
+      printf("ERROR: Unable to close file %s.\n", inputFile);
       exit(1);
     }
 
 #ifdef ENABLE_THREADS
-    MAIN_INITENV(,8000000,nThreads);
+    
+    pthread_mutexattr_init( &_M4_normalMutexAttr);
+//    pthread_mutexattr_settype( &_M4_normalMutexAttr, PTHREAD_MUTEX_NORMAL);
+    _M4_numThreads = nThreads;
+    {
+        int _M4_i;
+        for ( _M4_i = 0; _M4_i < MAX_THREADS; _M4_i++) {
+            _M4_threadsTableAllocated[_M4_i] = 0;
+        }
+    }
+;
 #endif
     printf("Num of Options: %d\n", numOptions);
     printf("Num of Runs: %d\n", NUM_RUNS);
@@ -439,9 +472,27 @@ int main (int argc, char **argv)
 
     for(i=0; i<nThreads; i++) {
         tids[i]=i;
-        CREATE_WITH_ARG(bs_thread, &tids[i]);
+        
+    {
+        int _M4_i;
+        for ( _M4_i = 0; _M4_i < MAX_THREADS; _M4_i++) {
+            if ( _M4_threadsTableAllocated[_M4_i] == 0)    break;
+        }
+        pthread_create(&_M4_threadsTable[_M4_i],NULL,(void *(*)(void *))bs_thread,(void *)&tids[i]);
+        _M4_threadsTableAllocated[_M4_i] = 1;
     }
-    WAIT_FOR_END(nThreads);
+;
+    }
+    
+    {
+        int _M4_i;
+        void *_M4_ret;
+        for ( _M4_i = 0; _M4_i < MAX_THREADS;_M4_i++) {
+            if ( _M4_threadsTableAllocated[_M4_i] == 0)    break;
+            pthread_join( _M4_threadsTable[_M4_i], &_M4_ret);
+        }
+    }
+;
     free(tids);
 #endif //WIN32
 #else //ENABLE_THREADS
@@ -472,26 +523,26 @@ int main (int argc, char **argv)
     //Write prices to output file
     file = fopen(outputFile, "w");
     if(file == NULL) {
-      printf("ERROR: Unable to open file `%s'.\n", outputFile);
+      printf("ERROR: Unable to open file %s.\n", outputFile);
       exit(1);
     }
     rv = fprintf(file, "%i\n", numOptions);
     if(rv < 0) {
-      printf("ERROR: Unable to write to file `%s'.\n", outputFile);
+      printf("ERROR: Unable to write to file %s.\n", outputFile);
       fclose(file);
       exit(1);
     }
     for(i=0; i<numOptions; i++) {
       rv = fprintf(file, "%.18f\n", prices[i]);
       if(rv < 0) {
-        printf("ERROR: Unable to write to file `%s'.\n", outputFile);
+        printf("ERROR: Unable to write to file %s.\n", outputFile);
         fclose(file);
         exit(1);
       }
     }
     rv = fclose(file);
     if(rv != 0) {
-      printf("ERROR: Unable to close file `%s'.\n", outputFile);
+      printf("ERROR: Unable to close file %s.\n", outputFile);
       exit(1);
     }
 
