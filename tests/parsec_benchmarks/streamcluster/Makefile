@@ -1,31 +1,22 @@
 # Makefile for streamcluster
 
-PREFIX=${PARSECDIR}/pkgs/kernels/streamcluster/inst/${PARSECPLAT}
+TARGET=$(platform)streamcluster
 
-TARGET=streamcluster
-OBJS=streamcluster.o
+include ../Makefile.inc
 
-ifdef version
-  ifeq "$(version)" "pthreads"
-    CXXFLAGS :=	$(CXXFLAGS) -DENABLE_THREADS -pthread
-    OBJS += parsec_barrier.o
-  endif
-  ifeq "$(version)" "tbb"
-    CXXFLAGS := $(CXXFLAGS) -DTBB_VERSION
-    LIBS := $(LIBS) -ltbb
-  endif
-endif
+#CXXFLAGS := $(CXXFLAGS) -O3 -funroll-loops -fpermissive -fno-exceptions
+#CXXFLAGS := $(CXXFLAGS) -static-libgcc -Wl,--hash-style=both,--as-needed
 
-all: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $(TARGET)
+all:
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBS) streamcluster.cpp parsec_barrier.cpp -o $(TARGET)
 
-%.o : %.cpp
-	$(CXX) $(CXXFLAGS) -c $<
+#%.o : %.cpp
+#	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
 	rm -f *.o $(TARGET)
 
 install:
-	mkdir -p $(PREFIX)/bin
-	cp -f $(TARGET) $(PREFIX)/bin/$(TARGET)
+	mkdir -p ./bin
+	cp -f $(TARGET) ./bin/$(TARGET)
 
