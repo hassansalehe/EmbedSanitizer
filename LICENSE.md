@@ -1,4 +1,4 @@
-BSD 3-Clause License
+EmbedSanitizer License
 
 Copyright (c) 2017, Hassan Salehe Matar  
 All rights reserved.
