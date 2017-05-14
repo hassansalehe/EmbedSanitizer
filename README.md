@@ -7,8 +7,9 @@ This tool has been tested on x86_64 machine with Ubuntu 16.04.  Moreover, make s
 * LLVM/Clang, more information on how to install: http://llvm.org/docs/GettingStarted.html
 * The cross-compilers utilities: 
 ```bash
-sudo apt-get install -y gcc-multilib g++-multilib libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi
-libncurses5-dev gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
+apt-get install -y gcc-multilib g++-multilib 
+apt-get install -y libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi
+apt-get install -y libncurses5-dev gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
 ```
 
 ### (b) Installation
