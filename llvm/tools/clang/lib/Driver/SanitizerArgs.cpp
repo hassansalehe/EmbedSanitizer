@@ -165,7 +165,7 @@ bool SanitizerArgs::needsUbsanRt() const {
   return ((Sanitizers.Mask & NeedsUbsanRt & ~TrapSanitizers.Mask) ||
           CoverageFeatures) &&
          !Sanitizers.has(Address) && !Sanitizers.has(Memory) &&
-         !Sanitizers.has(Thread) && !Sanitizers.has(DataFlow) && 
+         !Sanitizers.has(Thread) && !Sanitizers.has(DataFlow) &&
          !Sanitizers.has(Leak) && !CfiCrossDso;
 }
 
@@ -198,7 +198,9 @@ SanitizerArgs::SanitizerArgs(const ToolChain &TC,
   SanitizerMask DiagnosedKinds = 0;  // All Kinds we have diagnosed up to now.
                                      // Used to deduplicate diagnostics.
   SanitizerMask Kinds = 0;
-  const SanitizerMask Supported = setGroupBits(TC.getSupportedSanitizers());
+  // EmbedSanitizer: Changing Supported to non-const so we can 'force' threadSanitizer
+  // for 32-bit ARM. A simple hack but we will find permanent soln in the future.
+  SanitizerMask Supported = setGroupBits(TC.getSupportedSanitizers());
   ToolChain::RTTIMode RTTIMode = TC.getRTTIMode();
 
   const Driver &D = TC.getDriver();
@@ -226,6 +228,12 @@ SanitizerArgs::SanitizerArgs(const ToolChain &TC,
         DiagnosedKinds |= KindsToDiagnose;
       }
       Add &= ~InvalidTrappingKinds;
+
+      // EmbedSanitizer: forcing the loading of ThreadSanitizer if
+      // target architecture is 32-bit ARM
+      if(TC.getTriple().str() == "arm-none-linux-gnueabi")
+        Supported = 0xffffffffffff;
+
       if (SanitizerMask KindsToDiagnose = Add & ~Supported & ~DiagnosedKinds) {
         std::string Desc = describeSanitizeArg(*I, KindsToDiagnose);
         D.Diag(diag::err_drv_unsupported_opt_for_target)

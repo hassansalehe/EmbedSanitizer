@@ -46,6 +46,7 @@
 #include "llvm/Transforms/Utils/EscapeEnumerator.h"
 #include "llvm/Transforms/Utils/Local.h"
 #include "llvm/Transforms/Utils/ModuleUtils.h"
+#include "EmbedSanitizerExtension.h"
 
 using namespace llvm;
 
@@ -424,8 +425,12 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
       else if (isa<LoadInst>(Inst) || isa<StoreInst>(Inst))
         LocalLoadsAndStores.push_back(&Inst);
       else if (isa<CallInst>(Inst) || isa<InvokeInst>(Inst)) {
-        if (CallInst *CI = dyn_cast<CallInst>(&Inst))
+        if (CallInst *CI = dyn_cast<CallInst>(&Inst)) { // EmbedSanitizer modification
+
+          EmdedSanitizer::InstrIfSynchronization(Inst); // EmbedSanitizer: check for synchronizations
+
           maybeMarkSanitizerLibraryCallNoBuiltin(CI, TLI);
+        }
         if (isa<MemIntrinsic>(Inst))
           MemIntrinCalls.push_back(&Inst);
         HasCalls = true;
