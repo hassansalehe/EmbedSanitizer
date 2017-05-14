@@ -10,7 +10,7 @@ CXXFLAGS += -pthread -DENABLE_THREADS -static -g
 CXXFLAGS += -L/usr/arm-linux-gnueabi/lib
 CXXFLAGS += -I/usr/arm-linux-gnueabi/include -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi
 
-CXX=/home/hmatar/Desktop/EmbedSanitizer/arm/bin/clang++
+CXX=/home/hmatar/Desktop/GitSanitizer/arm/bin/clang++
 #platform=armNormal
 
 ### For ARM instrumentation ###

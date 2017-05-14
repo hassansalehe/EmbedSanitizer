@@ -13,7 +13,7 @@
 #########################################################################
 
 # Variables
-DEST=../arm/lib/clang/5.0.0/lib/linux/
+DEST=../arm/lib/clang/4.0.0/lib/linux/
 tSanLib=libclang_rt.tsan_cxx-arm
 
 # Compile and build static library

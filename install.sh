@@ -16,9 +16,12 @@ BuildDir=$HOME/build
 SrcDir=$HOME/build/llvm
 InstallDir=$HOME/arm
 
+rm -rf $BuildDir
+rm -rf $InstallDir
+
+mkdir -p $BuildDir
 mkdir -p $SrcDir
 mkdir -p $InstallDir
-rm -rf $InstallDir/*
 
 reportIfSuccessful() {
 if [ $? -eq 0 ]; then
@@ -118,6 +121,6 @@ reportIfSuccessful;
 # Step 5: build and install the embedded tsan runtime
 echo -e "\033[1;95m Building the embedded static race detection runtime\033[m"
 cd $HOME/etsan
-./configure
+./install.sh
 
 reportIfSuccessful;
