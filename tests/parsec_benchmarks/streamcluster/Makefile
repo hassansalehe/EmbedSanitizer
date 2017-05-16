@@ -1,22 +1,41 @@
+################################################
+# Copyright (c) 2017, Hassan Salehe Matar
+#
+# This file contains necessary compiler, linker,
+# and include flags for compiling the streamcluster
+# benchmark for 32-bit ARM binary.
+################################################
+
+
 # Makefile for streamcluster
 
-TARGET=$(platform)streamcluster
+CXXFLAGS += -g -O3 -pthread -DENABLE_THREADS
 
-include ../Makefile.inc
+ARMFLAGS  = -static -L/usr/arm-linux-gnueabi/lib
+ARMFLAGS += -I/usr/arm-linux-gnueabi/include
+ARMFLAGS += -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi
+TSANFLGS += -fsanitize=thread
 
-#CXXFLAGS := $(CXXFLAGS) -O3 -funroll-loops -fpermissive -fno-exceptions
-#CXXFLAGS := $(CXXFLAGS) -static-libgcc -Wl,--hash-style=both,--as-needed
+ARM_CXX=../../../arm/bin/clang++
 
-all:
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBS) streamcluster.cpp parsec_barrier.cpp -o $(TARGET)
+LIBFLAGS += -L/usr/lib64 -L/usr/lib
 
-#%.o : %.cpp
-#	$(CXX) $(CXXFLAGS) -c $<
+all:    arm arm_instr x86_64_instr
+
+arm:
+	$(ARM_CXX) $(CXXFLAGS) $(ARMFLAGS) 		\
+        streamcluster.cpp parsec_barrier.cpp 		\
+        -o streamcluster_arm.exe
+
+arm_instr:
+	$(ARM_CXX) $(CXXFLAGS) $(ARMFLAGS) $(TSANFLGS) 	\
+        streamcluster.cpp parsec_barrier.cpp -o 	\
+        streamcluster_arm_instrumented.exe
+
+x86_64_instr:
+	$(CXX) $(CXXFLAGS) $(LIBFLAGS) $(TSANFLGS) 	\
+        streamcluster.cpp parsec_barrier.cpp -o 	\
+        streamcluster_x64_instrumented.exe
 
 clean:
-	rm -f *.o $(TARGET)
-
-install:
-	mkdir -p ./bin
-	cp -f $(TARGET) ./bin/$(TARGET)
-
+	rm -rf *.o *.exe

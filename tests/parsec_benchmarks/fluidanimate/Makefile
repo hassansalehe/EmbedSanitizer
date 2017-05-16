@@ -1,10 +1,23 @@
-include ../Makefile.inc
+################################################
+# Copyright (c) 2017, Hassan Salehe Matar
+#
+# This file contains necessary compiler, linker,
+# and include flags for compiling the fluidanimate
+# benchmark for 32-bit ARM binary.
+################################################
 
-TARGET   = $(platform)fluidanimate
+CXXFLAGS += -Wno-invalid-offsetof -D_GNU_SOURCE -D__XOPEN_SOURCE=600
+CXXFLAGS += -pthread -DENABLE_THREADS -static -g
+CXXFLAGS += -I/usr/arm-linux-gnueabi/include -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi
+LDFLAGS  += -L/usr/arm-linux-gnueabi/lib
+
+ARM_CXX=../../../arm/bin/clang++
+
+CXXFLAGS += -fsanitize=thread
+
+#CXXFLAGS += -L/usr/lib64 -L/usr/lib
+
 OBJS     = pthreads.o cellpool.o parsec_barrier.o
-
-CXXFLAGS += -Wno-invalid-offsetof
-CXXFLAGS += -pthread -D_GNU_SOURCE -D__XOPEN_SOURCE=600
 
 # To enable visualization comment out the following lines (don't do this for benchmarking)
 #OBJS     += fluidview.o
@@ -14,16 +27,14 @@ CXXFLAGS += -pthread -D_GNU_SOURCE -D__XOPEN_SOURCE=600
 all: clean pthreads fluidcmp
 
 pthreads: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+	$(ARM_CXX) $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) -o fluidanimate_arm_instrumented.exe
 
 %.o : %.cpp
-	$(CXX) $(CXXFLAGS) -c $<
+	$(ARM_CXX) $(CXXFLAGS) -c $<
 
 fluidcmp: fluidcmp.cpp
 	rm -rf fluidcmp
-	$(CXX) $(CXXFLAGS) fluidcmp.cpp -o fluidcmp
+	$(ARM_CXX) $(CXXFLAGS) fluidcmp.cpp -o fluidcmp
 
 clean:
-	rm -rf $(TARGET)
-	rm -rf fluidcmp
-	rm -rf *.o
+	rm -rf *.o *.exe fluidcmp
