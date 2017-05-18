@@ -36,5 +36,5 @@ mv ${tSanLibc}.a $DEST
 # Check if everything is OK
 if [ $? -eq 0 ]; then
     rm -rf *.o *.a
-    echo "Dummy tsan lib successful installed"
+    echo " tsan lib successful installed"
 fi

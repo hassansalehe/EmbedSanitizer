@@ -1,4 +1,10 @@
+*.exe
 *.o
+*.out
 *~
 build/
 arm/
+out.txt
+output.txt
+stats.txt
+time.txt
