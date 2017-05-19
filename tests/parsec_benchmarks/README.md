@@ -11,4 +11,19 @@ To run these benchmark versions and get results use the bash script `run.sh`:
 ```bash
 >$ ./run.sh # reports the slowdowns and where races were detected.
 ```
-The bash script writes the results in `BenchmarkReports.txt` file
+The bash script writes the results in `BenchmarkReports.txt` file. Sample output from one
+of the benchmarks is shown below.
+```c++
+blackscholes: 
+ - ThreadSanitzer races?: no
+ - EmbedSanitizer in QEMU races?: no
+ - QEMU slowdown:       ~12.80665224445646295295
+ - Unique Addresses: 28686
+ - Total Reads: 5324786
+ - Total Writes: 409602
+ - Unique Locks: 0
+ - # of Threads: 3
+```
+
+If you want to run the benchmarks on target 32-bit ARM platform, please copy the whole of 
+`parsec_benchmarks` folder to  the target and run the `run.sh` script.
