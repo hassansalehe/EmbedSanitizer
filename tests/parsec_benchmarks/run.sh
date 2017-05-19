@@ -74,10 +74,10 @@ runBenchmark() {
   if [ -z "$platform" ]; then
     emulator="qemu-arm"
     platform="QEMU"
-    
+
     make
     ./${benchmark}_x64_instrumented.exe $input_set 2>&1 1>stats.txt | tee -a  stats.txt
-    reportRaces " - ThreadSanitzer";
+    reportRaces " - ThreadSanitizer";
   else
     emulator=""
     platform="ARMv7"

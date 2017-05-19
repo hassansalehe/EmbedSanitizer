@@ -7,11 +7,11 @@ is an efficient and precise race detection algorithm which relies on *happens-be
 ### Usage Summary
 EmbedSanitizer can be installed as part of LLVM/Clang infrastructure in a development machine; 
 presumably an x86_64 platform. Then it can be launched in similar manner to ThreadSanitizer; 
-using a compiler flag _-fsanitizer=thread_. Once the compiler produces your program's final 
+using a compiler flag _-fsanitize=thread_. Once the compiler produces your program's final 
 executable with EmbedSanitizer instrumentation, you can run on a target ARM 32-bit platform. 
 
 ```bash
-# Use the installed EmbedSanitizer in your developement machine as part of Clang compiler
+# Use the installed EmbedSanitizer in your development machine as part of Clang compiler
 # to build your 32-bit ARM applications.
 >$ ./clang++ my_program.cpp -o my_program.exe -fsanitize=thread -static <other_compiler_flags>
 
@@ -51,10 +51,10 @@ The `install.sh` script builds LLVM/Clang with EmbedSanitizer in it and installs
 ```bash
 >$  ./arm/bin/clang++ -o <executable_name> <your_program_name.cpp> -fsanitize=thread 
 ```
-The compiler produces an ARM-compatible exexutable.
+The compiler produces an ARM-compatible executable.
 
 #### (b) Running your program
-Once your program is instrumented and compiled by LLVM/Clang, you can run it in a 32-bit ARM platform. Alternatively, you can lauch your program with the Qemu emulator:
+Once your program is instrumented and compiled by LLVM/Clang, you can run it in a 32-bit ARM platform. Alternatively, you can launch your program with the Qemu emulator:
 ```bash
 >$ qemu-arm <executable_name>
 ```
@@ -67,4 +67,4 @@ Our license derives from that of LLVM/Clang project as we use its source codes. 
 Moreover, the benchmarks that we used for evaluation in `tests/parsec_benchmarks` have their own license from the PARSEC Benchmark suite.
 
 ### Contact
-For any equiries, suggestions or collaborations please contact `hassansalehe<at>gmail.com`
+For any inquiries, suggestions or collaborations please contact `hassansalehe<at>gmail.com`
