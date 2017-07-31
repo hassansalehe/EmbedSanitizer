@@ -8,7 +8,11 @@
 
 CXXFLAGS += -pthread -DENABLE_THREADS -static -g
 CLDFLAGS += -L/usr/arm-linux-gnueabi/lib
-CXXFLAGS += -I/usr/arm-linux-gnueabi/include -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi
+
+# Add includes for C++ library files: iostream, cstring, cstdlib, bits/config.h, etc
+CXXFLAGS += -I$(shell find /usr/arm-linux-gnueabi -name iostream | sed 's/\/iostream//g')
+CXXFLAGS += -I$(shell find /usr/arm-linux-gnueabi/include -type d -name arm-linux-gnueabi)
+CXXFLAGS += -I/usr/arm-linux-gnueabi/include
 
 ARM_CXX=../../../arm/bin/clang++
 

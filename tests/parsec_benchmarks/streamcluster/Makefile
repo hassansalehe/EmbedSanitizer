@@ -12,13 +12,17 @@
 CXXFLAGS += -g -O3 -pthread -DENABLE_THREADS
 
 ARMFLAGS  = -static -L/usr/arm-linux-gnueabi/lib
+
+# Add includes for C++ library files: iostream, cstring, cstdlib, bits/config.h, etc
+ARMFLAGS += -I$(shell find /usr/arm-linux-gnueabi -name iostream | sed 's/\/iostream//g')
+ARMFLAGS += -I$(shell find /usr/arm-linux-gnueabi/include -type d -name arm-linux-gnueabi)
 ARMFLAGS += -I/usr/arm-linux-gnueabi/include
-ARMFLAGS += -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi
 TSANFLGS += -fsanitize=thread
 
 ARM_CXX=../../../arm/bin/clang++
 
-LIBFLAGS += -L/usr/lib64 -L/usr/lib
+# Library linkage for producing x86_64 instrumented binary
+LIBFLAGS += -L/usr/lib64 -L/usr/lib -fPIC -shared
 
 all:    arm arm_instr x86_64_instr
 
