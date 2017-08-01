@@ -70,8 +70,11 @@ namespace EmdedSanitizer {
   void InstrIfSynchronization(Instruction & Inst) {
 
     CallInst *CI = dyn_cast<CallInst>(&Inst);
+    if( !CI ) return; // return if inconsistence (null)
+    
     Function *F = CI->getCalledFunction();
-
+    if( !F ) return; // return if inconsistent function (null)
+    
     StringRef name = F->getName();
     IRBuilder<> IRB(&Inst);
     Module * M = Inst.getModule();
