@@ -17,7 +17,7 @@ DEST=../arm/lib/clang/4.0.0/lib/linux/
 tSanLib=libclang_rt.tsan_cxx-arm
 
 # Compile and build static library
-arm-linux-gnueabi-g++ -c  tsan_interface.cc -o ${tSanLib}.o -static -std=c++11 -pthread
+arm-linux-gnueabi-g++ -c  tsan_interface.cc -o ${tSanLib}.o -static -std=c++11 -pthread -fpermissive
 #arm-linux-gnueabi-g++ -c tsan_fasttrack.cpp -o ${tSanLib}.o -static
 #../bin/bin/clang++ -c tsan_fasttrack.cpp -o ${tSanLib}.o -static -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi -I/usr/arm-linux-gnueabi/include
 arm-linux-gnueabi-ar rcs ${tSanLib}.a ${tSanLib}.o
