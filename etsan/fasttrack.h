@@ -168,4 +168,17 @@ void ft_join(ThreadState & t, ThreadState & u){
   TS.mGuard.unlock(); // release protection
 }
 
+
+void ft_atomic_load() {
+  printf("Warning: fasttrack atomic load not implemented!\n");
+}
+
+void ft_unaligned_read(){
+  printf("Warning: fasttrack unaligned read not implemented!\n");
+}
+
+void ft_unaligned_write(){
+  printf("Warning: fasttrack unaligned write not implemented!\n");
+}
+
 #endif // FASTTRACK_HPP_

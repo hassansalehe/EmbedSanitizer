@@ -15,6 +15,7 @@ void __tsan_init() {
 
   // create metadata for current thread
   //ThreadState& st = getThreadState();
+  printf("ThreadSanitizer initializing\n");
   //printf("Parent thread: %u = %d\n", (unsigned)pthread_self(), st.tid);
 }
 
@@ -29,13 +30,17 @@ void __tsan_read2(void * addr) {
     ft_read(getVarState(addr, false), getThreadState());
 }
 
-
 void __tsan_read4(void * addr) {
   if(isConcurrent)
     ft_read(getVarState(addr, false), getThreadState());
 }
 
 void __tsan_read8(void * addr) {
+  if(isConcurrent)
+    ft_read(getVarState(addr, false), getThreadState());
+}
+
+void __tsan_read16(void * addr) {
   if(isConcurrent)
     ft_read(getVarState(addr, false), getThreadState());
 }
@@ -56,6 +61,11 @@ void __tsan_write4(void* addr) {
 }
 
 void __tsan_write8(void* addr) {
+  if(isConcurrent)
+    ft_write(getVarState(addr, true), getThreadState());
+}
+
+void __tsan_write16(void* addr) {
   if(isConcurrent)
     ft_write(getVarState(addr, true), getThreadState());
 }
@@ -97,4 +107,51 @@ void __tsan_vptr_update(void **vptr_p, void *new_val) {
 
 void __tsan_vptr_read(void **vptr_p) {
 // tread as memory read
+}
+
+
+__tsan_atomic8 __tsan_atomic8_load(const volatile __tsan_atomic8 *a, __tsan_memory_order mo) {
+ ft_atomic_load();
+}
+__tsan_atomic16 __tsan_atomic16_load(const volatile __tsan_atomic16 *a, __tsan_memory_order mo) {
+ ft_atomic_load();
+}
+
+__tsan_atomic32 __tsan_atomic32_load(const volatile __tsan_atomic32 *a, __tsan_memory_order mo) {
+  ft_atomic_load();
+}
+
+a8 __tsan_atomic32_fetch_add(volatile a8 *a, a8 v, __tsan_memory_order mo) {
+  printf("EmbedSanitizer: atomic_fetch_add not implemented\n");
+}
+
+void __tsan_unaligned_read2(const void *addr) {
+  ft_unaligned_read();
+}
+
+void __tsan_unaligned_read4(const void *addr) {
+  ft_unaligned_read();
+}
+
+void __tsan_unaligned_read8(const void *addr) {
+  ft_unaligned_read();
+}
+
+void __tsan_unaligned_read16(const void *addr) {
+  ft_unaligned_read();
+}
+
+void __tsan_unaligned_write2(void *addr) {
+  ft_unaligned_write();
+}
+
+void __tsan_unaligned_write4(void *addr) {
+  ft_unaligned_write();
+}
+
+void __tsan_unaligned_write8(void *addr) {
+  ft_unaligned_write();
+}
+void __tsan_unaligned_write16(void *addr) {
+  ft_unaligned_write();
 }
