@@ -9,6 +9,7 @@
 
 #include "tsan_interface.h"
 #include "fasttrack.h"
+#include "raceReport.h"
 #include "defs.h"
 
 typedef unsigned long uptr; // NOLINT
@@ -25,116 +26,270 @@ void __tsan_init() {
 /*
  * 1. Callbacks for memory accesses
  */
-void __tsan_read1(void * addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
-    //  MemoryRead(cur_thread(), CALLERPC, (uptr)addr, kSizeLog1);
+void __tsan_read1(void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
+  //  MemoryRead(cur_thread(), CALLERPC, (uptr)addr, kSizeLog1);
 }
 
-void __tsan_read2(void * addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+void __tsan_read2(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_read4(void * addr) {
-  printf("Memory read at line: %p\n", CALLERPC);
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+void __tsan_read4(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_read8(void * addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+void __tsan_read8(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_read16(void * addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+void __tsan_read16(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_write1(void * addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_write1(
+       void* addr,
+       int lineNo,
+       void* objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_write2(void * addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_write2(void * addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_write4(void* addr) {
-  printf("Memory write at line: %p\n", CALLERPC);
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_write4(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+//  printf("Memory write at line: %p\n", CALLERPC);
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_write8(void* addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_write8(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_write16(void* addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_write16(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
 
 /**
  * 2. Callbacks for unaligned memory accesses
  */
-void __tsan_unaligned_read2(const void *addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+void __tsan_unaligned_read2(
+       const void *addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_unaligned_read4(const void *addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+
+void __tsan_unaligned_read4(
+       const void *addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_unaligned_read8(const void *addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+void __tsan_unaligned_read8(
+       const void *addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_unaligned_read16(const void *addr) {
-  if(isConcurrent)
-    ft_read(getVarState(addr, false), getThreadState());
+void __tsan_unaligned_read16(
+       const void *addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_read(getVarState(addr, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceRead( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_unaligned_write2(void *addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_unaligned_write2(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_unaligned_write4(void *addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_unaligned_write4(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_unaligned_write8(void *addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_unaligned_write8(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_unaligned_write16(void *addr) {
-  if(isConcurrent)
-    ft_write(getVarState(addr, true), getThreadState());
+void __tsan_unaligned_write16(
+       void* addr,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(addr, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
-
 
 /**
  * 3. Callbacks for virtual pointer accesses
  */
-void __tsan_vptr_read(void **vptr_p) {
-  if(isConcurrent)
-    ft_read(getVarState(vptr_p, false), getThreadState());
+void __tsan_vptr_read(void **vptr_p,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(vptr_p, false), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
-void __tsan_vptr_update(void **vptr_p, void *new_val) {
-  if(isConcurrent)
-    ft_write(getVarState(vptr_p, true), getThreadState());
-
+void __tsan_vptr_update(void **vptr_p, void *new_val,
+       int lineNo,
+       void * objName,
+       void* fileName) {
+  if(isConcurrent) {
+    bool isRace = ft_write(getVarState(vptr_p, true), getThreadState());
+    if( isRace ) {
+      etsan::reportRaceWrite( lineNo, objName, fileName );
+    }
+  }
 }
 
 

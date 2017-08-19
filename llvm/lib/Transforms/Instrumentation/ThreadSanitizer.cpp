@@ -47,6 +47,7 @@
 #include "llvm/Transforms/Utils/Local.h"
 #include "llvm/Transforms/Utils/ModuleUtils.h"
 #include "EmbedSanitizerExtension.h"
+#include "EmbedSanitizerDebugInfo.h"
 
 using namespace llvm;
 
@@ -136,15 +137,15 @@ struct ThreadSanitizer : public FunctionPass {
 char ThreadSanitizer::ID = 0;
 INITIALIZE_PASS_BEGIN(
     ThreadSanitizer, "tsan",
-    "ThreadSanitizer: detects data races.",
+    "EmbedSanitizer: detects data races.",
     false, false)
 INITIALIZE_PASS_DEPENDENCY(TargetLibraryInfoWrapperPass)
 INITIALIZE_PASS_END(
     ThreadSanitizer, "tsan",
-    "ThreadSanitizer: detects data races.",
+    "EmbedSanitizer: detects data races.",
     false, false)
 
-StringRef ThreadSanitizer::getPassName() const { return "ThreadSanitizer"; }
+StringRef ThreadSanitizer::getPassName() const { return "EmbedSanitizer"; }
 
 void ThreadSanitizer::getAnalysisUsage(AnalysisUsage &AU) const {
   AU.addRequired<TargetLibraryInfoWrapperPass>();
@@ -175,21 +176,25 @@ void ThreadSanitizer::initializeCallbacks(Module &M) {
     std::string BitSizeStr = utostr(BitSize);
     SmallString<32> ReadName("__tsan_read" + ByteSizeStr);
     TsanRead[i] = checkSanitizerInterfaceFunction(M.getOrInsertFunction(
-        ReadName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(), nullptr));
+        ReadName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(),
+        IRB.getInt8Ty(), IRB.getInt8PtrTy(), IRB.getInt8PtrTy(), nullptr));
 
     SmallString<32> WriteName("__tsan_write" + ByteSizeStr);
     TsanWrite[i] = checkSanitizerInterfaceFunction(M.getOrInsertFunction(
-        WriteName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(), nullptr));
+        WriteName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(),
+        IRB.getInt8Ty(), IRB.getInt8PtrTy(), IRB.getInt8PtrTy(), nullptr));
 
     SmallString<64> UnalignedReadName("__tsan_unaligned_read" + ByteSizeStr);
     TsanUnalignedRead[i] =
         checkSanitizerInterfaceFunction(M.getOrInsertFunction(
-            UnalignedReadName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(), nullptr));
+            UnalignedReadName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(),
+            IRB.getInt8Ty(), IRB.getInt8PtrTy(), IRB.getInt8PtrTy(), nullptr));
 
     SmallString<64> UnalignedWriteName("__tsan_unaligned_write" + ByteSizeStr);
     TsanUnalignedWrite[i] =
         checkSanitizerInterfaceFunction(M.getOrInsertFunction(
-            UnalignedWriteName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(), nullptr));
+            UnalignedWriteName, Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(),
+            IRB.getInt8Ty(), IRB.getInt8PtrTy(), IRB.getInt8PtrTy(), nullptr));
 
     Type *Ty = Type::getIntNTy(M.getContext(), BitSize);
     Type *PtrTy = Ty->getPointerTo();
@@ -233,9 +238,11 @@ void ThreadSanitizer::initializeCallbacks(Module &M) {
   }
   TsanVptrUpdate = checkSanitizerInterfaceFunction(
       M.getOrInsertFunction("__tsan_vptr_update", Attr, IRB.getVoidTy(),
-                            IRB.getInt8PtrTy(), IRB.getInt8PtrTy(), nullptr));
+                            IRB.getInt8PtrTy(), IRB.getInt8PtrTy(),
+                            IRB.getInt8Ty(), IRB.getInt8PtrTy(), IRB.getInt8PtrTy(), nullptr));
   TsanVptrLoad = checkSanitizerInterfaceFunction(M.getOrInsertFunction(
-      "__tsan_vptr_read", Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(), nullptr));
+      "__tsan_vptr_read", Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(),
+                          IRB.getInt8Ty(), IRB.getInt8PtrTy(), IRB.getInt8PtrTy(), nullptr));
   TsanAtomicThreadFence = checkSanitizerInterfaceFunction(M.getOrInsertFunction(
       "__tsan_atomic_thread_fence", Attr, IRB.getVoidTy(), OrdTy, nullptr));
   TsanAtomicSignalFence = checkSanitizerInterfaceFunction(M.getOrInsertFunction(
@@ -427,7 +434,7 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
       else if (isa<CallInst>(Inst) || isa<InvokeInst>(Inst)) {
         if (CallInst *CI = dyn_cast<CallInst>(&Inst)) { // EmbedSanitizer modification
 
-          EmdedSanitizer::InstrIfSynchronization(Inst); // EmbedSanitizer: check for synchronizations
+          EmbedSanitizer::InstrIfSynchronization(Inst); // EmbedSanitizer: check for synchronizations
 
           maybeMarkSanitizerLibraryCallNoBuiltin(CI, TLI);
         }
@@ -517,13 +524,21 @@ bool ThreadSanitizer::instrumentLoadOrStore(Instruction *I,
     // Call TsanVptrUpdate.
     IRB.CreateCall(TsanVptrUpdate,
                    {IRB.CreatePointerCast(Addr, IRB.getInt8PtrTy()),
-                    IRB.CreatePointerCast(StoredValue, IRB.getInt8PtrTy())});
+                    IRB.CreatePointerCast(StoredValue, IRB.getInt8PtrTy()),
+                    IRB.CreateIntCast(EmbedSanitizer::getLineNumber(I), IRB.getInt8Ty(), false),
+                    EmbedSanitizer::getObjectName(Addr, I, DL),
+                    EmbedSanitizer::getFileName(I)
+                  });
     NumInstrumentedVtableWrites++;
     return true;
   }
   if (!IsWrite && isVtableAccess(I)) {
     IRB.CreateCall(TsanVptrLoad,
-                   IRB.CreatePointerCast(Addr, IRB.getInt8PtrTy()));
+                   {IRB.CreatePointerCast(Addr, IRB.getInt8PtrTy()),
+                    IRB.CreateIntCast(EmbedSanitizer::getLineNumber(I), IRB.getInt8Ty(), false),
+                    EmbedSanitizer::getObjectName(Addr, I, DL),
+                    EmbedSanitizer::getFileName(I)
+                  });
     NumInstrumentedVtableReads++;
     return true;
   }
@@ -537,7 +552,13 @@ bool ThreadSanitizer::instrumentLoadOrStore(Instruction *I,
     OnAccessFunc = IsWrite ? TsanWrite[Idx] : TsanRead[Idx];
   else
     OnAccessFunc = IsWrite ? TsanUnalignedWrite[Idx] : TsanUnalignedRead[Idx];
-  IRB.CreateCall(OnAccessFunc, IRB.CreatePointerCast(Addr, IRB.getInt8PtrTy()));
+  IRB.CreateCall(OnAccessFunc, {
+        IRB.CreatePointerCast(Addr, IRB.getInt8PtrTy()),
+        IRB.CreateIntCast(EmbedSanitizer::getLineNumber(I), IRB.getInt8Ty(), false),
+        EmbedSanitizer::getObjectName(Addr, I, DL),
+        EmbedSanitizer::getFileName(I)
+      });
+
   if (IsWrite) NumInstrumentedWrites++;
   else         NumInstrumentedReads++;
   return true;

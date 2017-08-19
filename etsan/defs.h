@@ -21,6 +21,8 @@ typedef vector<int> VectorClock;
 
 #define READ_SHARED 0XEFFFFFFF
 
+#define REPORT_RACES 1
+
 #ifdef REPORT_RACES
 #define race_message(msg) { printf("Race :%s\n", msg); }
 #else
@@ -36,7 +38,7 @@ typedef vector<int> VectorClock;
   return;		\
  }
 
-#define FastPathReturn { VS.mGuard.unlock(); return;}
+#define FastPathReturn { VS.mGuard.unlock(); return reportIsRacy;}
 
 /**
  * Maybe unnecessary but keeps track of

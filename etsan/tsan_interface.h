@@ -12,25 +12,25 @@ extern "C" {
 // before any instrumented code is executed and before any call to malloc.
 void __tsan_init();
 
-void __tsan_read1(void *addr);
+void __tsan_read1(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_read2(void *addr);
+void __tsan_read2(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_read4(void *addr);
+void __tsan_read4(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_read8(void *addr);
+void __tsan_read8(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_read16(void *addr);
+void __tsan_read16(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_write1(void *addr);
+void __tsan_write1(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_write2(void *addr);
+void __tsan_write2(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_write4(void *addr);
+void __tsan_write4(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_write8(void *addr);
+void __tsan_write8(void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_write16(void *addr);
+void __tsan_write16(void *addr, int lineNo, void* objName, void * fileName);
 
 void __tsan_func_entry(void *call_pc);
 void __tsan_func_exit();
@@ -43,8 +43,10 @@ void __tsan_thread_lock(void * lock);
 
 void __tsan_thread_unlock(void * lock);
 
-void __tsan_vptr_update(void **vptr_p, void *new_val);
-void __tsan_vptr_read(void **vptr_p);
+void __tsan_vptr_update(void **vptr_p, void *new_val ,
+                        int lineNo, void* objName, void * fileName);
+void __tsan_vptr_read(void **vptr_p,
+                      int lineNo, void* objName, void * fileName);
 
 /** Code adapted from tsan of LLVM*/
 typedef char  __tsan_atomic8;
@@ -69,15 +71,15 @@ __tsan_atomic8  __tsan_atomic8_load(const volatile  __tsan_atomic8 *a,  __tsan_m
 __tsan_atomic16 __tsan_atomic16_load(const volatile __tsan_atomic16 *a, __tsan_memory_order mo);
 __tsan_atomic32 __tsan_atomic32_load(const volatile __tsan_atomic32 *a, __tsan_memory_order mo);
 
-void __tsan_unaligned_read2(const void *addr);
-void __tsan_unaligned_read4(const void *addr);
-void __tsan_unaligned_read8(const void *addr);
-void __tsan_unaligned_read16(const void *addr);
+void __tsan_unaligned_read2(const void *addr, int lineNo, void* objName, void * fileName);
+void __tsan_unaligned_read4(const void *addr, int lineNo, void* objName, void * fileName);
+void __tsan_unaligned_read8(const void *addr, int lineNo, void* objName, void * fileName);
+void __tsan_unaligned_read16(const void *addr, int lineNo, void* objName, void * fileName);
 
-void __tsan_unaligned_write2(void *addr);
-void __tsan_unaligned_write4(void *addr);
-void __tsan_unaligned_write8(void *addr);
-void __tsan_unaligned_write16(void *addr);
+void __tsan_unaligned_write2(void *addr, int lineNo, void* objName, void * fileName);
+void __tsan_unaligned_write4(void *addr, int lineNo, void* objName, void * fileName);
+void __tsan_unaligned_write8(void *addr, int lineNo, void* objName, void * fileName);
+void __tsan_unaligned_write16(void *addr, int lineNo, void* objName, void * fileName);
 
 a8 __tsan_atomic32_fetch_add(volatile a8 *a, a8 v, __tsan_memory_order mo);
 

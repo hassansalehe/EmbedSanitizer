@@ -59,7 +59,7 @@ using namespace llvm;
 // synchronization events of a program in ThreadSanitizer.
 // Particularly, it extends ThreadSanitizer to serve the
 // purpose of EmbedSanitizer: race detection for 32-bit ARM.
-namespace EmdedSanitizer {
+namespace EmbedSanitizer {
 
   /**
    * Check if the call instruction calls one of the
@@ -71,10 +71,10 @@ namespace EmdedSanitizer {
 
     CallInst *CI = dyn_cast<CallInst>(&Inst);
     if( !CI ) return; // return if inconsistence (null)
-    
+
     Function *F = CI->getCalledFunction();
     if( !F ) return; // return if inconsistent function (null)
-    
+
     StringRef name = F->getName();
     IRBuilder<> IRB(&Inst);
     Module * M = Inst.getModule();

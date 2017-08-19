@@ -3,16 +3,18 @@
 
 #include "defs.h"
 
-void ft_read(VarState & x, ThreadState & t);
-void ft_write(VarState & x, ThreadState & t);
+bool ft_read(VarState & x, ThreadState & t);
+bool ft_write(VarState & x, ThreadState & t);
 
 /**
  * Performs race detection at read event
  * @param x memory address state
  * @param t state of the thread which performed read operation
+ * @return true if there is a race, false otherwise.
  */
-void ft_read(VarState & x, ThreadState & t) {
+bool ft_read(VarState & x, ThreadState & t) {
 
+  bool reportIsRacy = false;
   VS.mGuard.lock(); // protect
 // #ifdef STATS
   VS.reads++;
@@ -27,7 +29,7 @@ void ft_read(VarState & x, ThreadState & t) {
 #ifdef DEBUG
     printf("x.tid: %d, t.tid: %d\n", TID(x.W), t.tid);
 #endif
-    error(x, "23");
+    reportIsRacy = true;
   }
 
   // update read state
@@ -54,33 +56,45 @@ void ft_read(VarState & x, ThreadState & t) {
   }
 
   VS.mGuard.unlock(); // release protection
+
+  return reportIsRacy;
 }
 
+/**
+ * Performs race detection on write event
+ * @param x memory address state
+ * @param t state of the thread which performed read operation
+ * @return true if there is a race, false otherwise.
+ */
+bool ft_write(VarState & x, ThreadState & t) {
 
-void ft_write(VarState & x, ThreadState & t) {
-
+  bool reportIsRacy = false;
   VS.mGuard.lock(); // protection
 
 // #ifdef STATS
   VS.writes++;
 // #endif
 
-  if(x.Racy) FastPathReturn;
+  if(x.Racy) FastPathReturn; // should already have been reported
 
   if(x.W == t.epoch) FastPathReturn;     // Same epoch 71.0%
 
   // write-write race?
-  if( TID(x.W) != t.tid && CLOCK(x.W) > CLOCK( t.C[TID(x.W)] ) ) error(x, "61");
+  if( TID(x.W) != t.tid && CLOCK(x.W) > CLOCK( t.C[TID(x.W)] ) )
+    reportIsRacy = true;
 
   // read-write race?
   if(x.R != READ_SHARED)    // Write Exclusive 28.9%
   {
-    if(TID(x.R) != t.tid && CLOCK(x.R) > CLOCK(t.C[TID(x.R)]) ) error(x,"66");
+    if(TID(x.R) != t.tid && CLOCK(x.R) > CLOCK(t.C[TID(x.R)]) )
+      reportIsRacy = true;
   }
   else
   {                       // Write Shared       0.1%
     for(int u = 0; u < /*NumThreads*/min(x.Rvc.size(), t.C.size()); u++)
-      if(x.Rvc[u] > t.C[u]) error(x, "71"); // (SLOW PATH)
+      if(x.Rvc[u] > t.C[u]) // (SLOW PATH)
+        reportIsRacy = true; // RACE!
+
       // also have to set R = epoch
       x.R = (TID(t.epoch) << 24); // 0@tid
   } // a possible bug.
@@ -88,6 +102,8 @@ void ft_write(VarState & x, ThreadState & t) {
   x.W = t.epoch; // update write state
 
   VS.mGuard.unlock(); // release protection
+
+  return reportIsRacy;
 }
 
 
