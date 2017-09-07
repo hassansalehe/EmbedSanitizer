@@ -64,16 +64,22 @@ namespace EmbedSanitizer {
    * Returns the name of the file which an instruction belongs to.
    */
   Value* getFileName(Instruction* I) {
+
+    StringRef name = "Unknown";
+
+    // get debug information to retrieve file name
     const DebugLoc &location = I->getDebugLoc();
-    auto *Scope = cast<DIScope>( location->getScope() );
-    errs() << Scope->getFilename() << "\n" ;
+    if( location ) {
+      auto *Scope = cast<DIScope>( location->getScope() );
+      if(Scope)
+         name = Scope->getFilename();
+    }
 
     Function* F = I->getFunction();
     IRBuilder<> IRB(F->getEntryBlock().getFirstNonPHI());
 
-    return IRB.CreateGlobalStringPtr(Scope->getFilename(), "fName");
+    return IRB.CreateGlobalStringPtr(name, "fName");
   }
-
 
   /**
    * Returns the name of the memory location involved.
