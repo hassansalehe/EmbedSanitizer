@@ -340,4 +340,5 @@ void __tsan_func_entry(void *pc) {
 
 void __tsan_func_exit() {
     //  FuncExit(cur_thread());
+  printf("EmbedSanitizer: exit (not implemented\n");
 }
