@@ -1,8 +1,8 @@
 ## EmbedSanitizer: A Runtime Race Detection Tool for 32-bit Embedded ARM
 This tool extends ThreadSanitizer to do race detection for 32-bit ARM applications. 
 Due to the complexity of the ThreadSanitizer's race detection runtime, EmbedSanitizer
-implements its own by applying FastTrack. FastTrack (see: [link](https://users.soe.ucsc.edu/~cormac/papers/pldi09.pdf)) 
-is an efficient and precise race detection algorithm which relies on *happens-before* concepts.
+implements its own runtime by applying FastTrack (see: [link](https://users.soe.ucsc.edu/~cormac/papers/pldi09.pdf)) which
+is an efficient and precise race detection algorithm relying on *happens-before* concepts.
 
 ### Usage Summary
 EmbedSanitizer can be installed as part of LLVM/Clang infrastructure in a development machine; 
