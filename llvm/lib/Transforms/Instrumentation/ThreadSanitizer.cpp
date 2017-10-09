@@ -424,6 +424,11 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
   const TargetLibraryInfo *TLI =
       &getAnalysis<TargetLibraryInfoWrapperPass>().getTLI();
 
+  // Save function name as string into function body
+  Value* func_name = EmbedSanitizer::getFuncName(F);
+  IRBuilder<> IRB(F.getEntryBlock().getFirstNonPHI());
+  IRB.CreateCall(TsanFuncEntry, {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
+
   // Traverse all instructions, collect loads/stores/returns, check for calls.
   for (auto &BB : F) {
     for (auto &Inst : BB) {

@@ -60,6 +60,20 @@ using namespace llvm;
 // reporting of EmbedSanitizer.
 namespace EmbedSanitizer {
 
+/**
+ * Demangles names of attributes, functions, etc
+ */
+StringRef demangleName(StringRef name) {
+  int status = -1;
+  std::string name_(name.str());
+  char* d =abi::__cxa_demangle(name_.c_str(), nullptr, nullptr, &status);
+  if(! status) {
+    StringRef ab(d);
+    return ab;
+  }
+  return name;
+}
+
   /**
    * Returns the name of the file which an instruction belongs to.
    */
@@ -80,6 +94,20 @@ namespace EmbedSanitizer {
 
     return IRB.CreateGlobalStringPtr(name, "fName");
   }
+
+/**
+ * Returns name of the function under instrumentation.
+ * The name is retrieved later at runtime.
+ */
+Value* getFuncName(Function & F) {
+  StringRef name = demangleName(F.getName());
+  auto idx = name.find('(');
+  if(idx != StringRef::npos)
+    name = name.substr(0, idx);
+
+  IRBuilder<> IRB(F.getEntryBlock().getFirstNonPHI());
+  return IRB.CreateGlobalStringPtr(name, "func_name");
+}
 
   /**
    * Returns the name of the memory location involved.
@@ -113,4 +141,5 @@ namespace EmbedSanitizer {
       return zero;
     }
   }
-}
+
+} // EmbedSanitizer
