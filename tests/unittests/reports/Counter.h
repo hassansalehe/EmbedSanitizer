@@ -3,8 +3,15 @@
 
 int counter = 0;
 
-void incrementCounter() {
+namespace reader {
+
+void machine_reader() {
   counter++;
+}
+};
+
+void incrementCounter() {
+  reader::machine_reader();
 }
 
 #endif
