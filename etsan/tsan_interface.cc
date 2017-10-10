@@ -333,12 +333,10 @@ a8 __tsan_atomic32_fetch_add(volatile a8 *a, a8 v, __tsan_memory_order mo) {
   printf("EmbedSanitizer: atomic_fetch_add not implemented\n");
 }
 
-void __tsan_func_entry(void *pc) {
-  printf("EmbedSanitizer: function entry at %p\n", pc);
-    //  FuncEntry(cur_thread(), (uptr)pc);
+void __tsan_func_entry(void *funcName) {
+  etsan::pushFunction((char*)funcName);
 }
 
-void __tsan_func_exit() {
-    //  FuncExit(cur_thread());
-  printf("EmbedSanitizer: exit (not implemented\n");
+void __tsan_func_exit(void *funcName) {
+  etsan::popFunction((char *)funcName);
 }

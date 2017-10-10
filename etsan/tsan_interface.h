@@ -33,7 +33,7 @@ void __tsan_write8(void *addr, int lineNo, void* objName, void * fileName);
 void __tsan_write16(void *addr, int lineNo, void* objName, void * fileName);
 
 void __tsan_func_entry(void *call_pc);
-void __tsan_func_exit();
+void __tsan_func_exit(void *call_pc);
 
 void __tsan_thread_create(void * child_id);
 
