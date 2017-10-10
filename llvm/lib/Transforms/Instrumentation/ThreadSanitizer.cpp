@@ -424,11 +424,6 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
   const TargetLibraryInfo *TLI =
       &getAnalysis<TargetLibraryInfoWrapperPass>().getTLI();
 
-  // Save function name as string into function body
-  Value* func_name = EmbedSanitizer::getFuncName(F);
-  IRBuilder<> IRB(F.getEntryBlock().getFirstNonPHI());
-  IRB.CreateCall(TsanFuncEntry, {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
-
   // Traverse all instructions, collect loads/stores/returns, check for calls.
   for (auto &BB : F) {
     for (auto &Inst : BB) {
@@ -484,14 +479,19 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
   // Instrument function entry/exit points if there were instrumented accesses.
   if ((Res || HasCalls) && ClInstrumentFuncEntryExit) {
     IRBuilder<> IRB(F.getEntryBlock().getFirstNonPHI());
-    Value *ReturnAddress = IRB.CreateCall(
-        Intrinsic::getDeclaration(F.getParent(), Intrinsic::returnaddress),
-        IRB.getInt32(0));
-    IRB.CreateCall(TsanFuncEntry, ReturnAddress);
+    //Value *ReturnAddress = IRB.CreateCall(
+    //    Intrinsic::getDeclaration(F.getParent(), Intrinsic::returnaddress),
+    //    IRB.getInt32(0));
+
+
+    //IRB.CreateCall(TsanFuncEntry, ReturnAddress);
+    // Save function name as string into function body
+    Value* func_name = EmbedSanitizer::getFuncName(F);
+    IRB.CreateCall(TsanFuncEntry, {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
 
     EscapeEnumerator EE(F, "tsan_cleanup", ClHandleCxxExceptions);
     while (IRBuilder<> *AtExit = EE.Next()) {
-      AtExit->CreateCall(TsanFuncExit, {});
+      AtExit->CreateCall(TsanFuncExit, {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
     }
     Res = true;
   }
