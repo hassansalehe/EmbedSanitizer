@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <set>
 #include "race.h"
+#include "fileDictionary.h"
 
 using namespace std;
 

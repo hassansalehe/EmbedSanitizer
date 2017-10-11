@@ -17,6 +17,8 @@
 #include <set>
 #include <string>
 
+namespace etsan {
+
 /**
  * This class holds the list of files for debuggability of
  * races detected by EmbedSanitizer race detector.
@@ -29,11 +31,11 @@ class FileDictionary {
   std::unordered_set<char *> files;
 
   void inserFile(char * file_name) {
-    files.insert(name);
+    files.insert(file_name);
   }
 
   bool exists(char * file_name) {
-    return (files.find(file_name) != files.end())
+    return files.find(file_name) != files.end();
   }
 
   void saveModule(char * module_path) {
@@ -44,4 +46,6 @@ class FileDictionary {
 
 }; // FileDictionary
 
+
+}; // etsan
 #endif // ETSAN_FILEDICTIONARY_H_
