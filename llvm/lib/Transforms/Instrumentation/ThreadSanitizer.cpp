@@ -113,6 +113,7 @@ struct ThreadSanitizer : public FunctionPass {
   // Callbacks to run-time library are computed in doInitialization.
   Function *TsanFuncEntry;
   Function *TsanFuncExit;
+  Function *TsanMainFuncExit; // exit of main function
   Function *TsanIgnoreBegin;
   Function *TsanIgnoreEnd;
   // Accesses sizes are powers of two: 1, 2, 4, 8, 16.
@@ -160,6 +161,8 @@ void ThreadSanitizer::initializeCallbacks(Module &M) {
   AttributeSet Attr;
   Attr = Attr.addAttribute(M.getContext(), AttributeSet::FunctionIndex, Attribute::NoUnwind);
   // Initialize the callbacks.
+  TsanMainFuncExit = checkSanitizerInterfaceFunction(M.getOrInsertFunction(
+      "__tsan_main_func_exit", Attr, IRB.getVoidTy(), nullptr));
   TsanFuncEntry = checkSanitizerInterfaceFunction(M.getOrInsertFunction(
       "__tsan_func_entry", Attr, IRB.getVoidTy(), IRB.getInt8PtrTy(), nullptr));
   TsanFuncExit = checkSanitizerInterfaceFunction(
@@ -494,6 +497,15 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
       AtExit->CreateCall(TsanFuncExit, {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
     }
     Res = true;
+
+    // instrument main function to report races
+    if(EmbedSanitizer::getFuncNameStr(F) == "main") {
+
+      EscapeEnumerator Emain(F, "tsan_cleanup_report", ClHandleCxxExceptions);
+      while (IRBuilder<> *AtExit = Emain.Next()) {
+        AtExit->CreateCall(TsanMainFuncExit, {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
+      }
+    }
   }
   return Res;
 }
