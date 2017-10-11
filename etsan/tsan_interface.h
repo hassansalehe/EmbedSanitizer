@@ -1,5 +1,5 @@
-#ifndef TSAN_INTERFACE_H
-#define TSAN_INTERFACE_H
+#ifndef TSAN_INTERFACE_H_
+#define TSAN_INTERFACE_H_
 
 // This header should NOT include any other headers.
 // All functions in this header are extern "C" and start with __tsan_.
@@ -11,6 +11,10 @@ extern "C" {
 // This function should be called at the very beginning of the process,
 // before any instrumented code is executed and before any call to malloc.
 void __tsan_init();
+
+// This function is executed when main function is about to return
+// Useful for printing the collected races.
+void __tsan_main_func_exit();
 
 void __tsan_read1(void *addr, int lineNo, void* objName, void * fileName);
 
@@ -87,4 +91,4 @@ a8 __tsan_atomic32_fetch_add(volatile a8 *a, a8 v, __tsan_memory_order mo);
 }  // extern "C"
 #endif
 
-#endif  // TSAN_INTERFACE_H
+#endif  // TSAN_INTERFACE_H_

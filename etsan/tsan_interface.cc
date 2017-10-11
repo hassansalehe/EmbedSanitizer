@@ -23,6 +23,10 @@ void __tsan_init() {
   //printf("Parent thread: %u = %d\n", (unsigned)pthread_self(), st.tid);
 }
 
+void __tsan_main_func_exit() {
+  etsan::printRaces();
+}
+
 /*
  * 1. Callbacks for memory accesses
  */
