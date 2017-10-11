@@ -6,6 +6,10 @@
 // License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
+//
+// (c) 2017 - Hassan Salehe Matar, Koc University
+//            Email: hmatar@ku.edu.tr
+//===----------------------------------------------------------------------===//
 
 #include "tsan_interface.h"
 #include "fasttrack.h"

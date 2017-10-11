@@ -1,3 +1,15 @@
+//===-- fattrack.h implements race detection using Fasttrack algorithm   -===//
+//
+//
+// This file is distributed under the BSD 3-clause "New" or "Revised" License
+// License. See LICENSE.md for details.
+//
+//===----------------------------------------------------------------------===//
+//
+// (c) 2017 - Hassan Salehe Matar, Koc University
+//            Email: hmatar@ku.edu.tr
+//===----------------------------------------------------------------------===//
+
 #ifndef FASTTRACK_HPP_
 #define FASTTRACK_HPP_
 

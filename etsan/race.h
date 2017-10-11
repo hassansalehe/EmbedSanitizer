@@ -1,3 +1,17 @@
+//===-- Runtime race detection module of EmbedSanitizer - for Embeded ARM--===//
+//
+//
+// This file is distributed under the BSD 3-clause "New" or "Revised" License
+// License. See LICENSE.md for details.
+//
+//===----------------------------------------------------------------------===//
+//
+// (c) 2017 - Hassan Salehe Matar, Koc University
+//            Email: hmatar@ku.edu.tr
+//===----------------------------------------------------------------------===//
+
+// Defines Race class for storing race metadata
+
 #ifndef ETSAN_RACE_H_
 #define ETSAN_RACE_H_
 

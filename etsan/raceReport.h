@@ -1,3 +1,17 @@
+//===-- Runtime race detection module of EmbedSanitizer - for Embeded ARM--===//
+//
+//
+// This file is distributed under the BSD 3-clause "New" or "Revised" License
+// License. See LICENSE.md for details.
+//
+//===----------------------------------------------------------------------===//
+//
+// (c) 2017 - Hassan Salehe Matar, Koc University
+//            Email: hmatar@ku.edu.tr
+//===----------------------------------------------------------------------===//
+
+// Code for formatting race warning messages
+
 #ifndef __RACE_REPORT__H_
 #define __RACE_REPORT__H_
 
