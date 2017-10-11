@@ -74,19 +74,55 @@ StringRef demangleName(StringRef name) {
   return name;
 }
 
+/*
+ * Returns file name with absolute path
+ */
+std::string createAbsoluteFileName(
+  std::string & dir_name,
+  std::string &file_name) {
+
+  if(dir_name.size() <= 0 || file_name.size() <= 0)
+    return file_name;
+
+  // has full path already
+  if(file_name[0] == '/')
+    return file_name;
+
+  if(file_name[0] == '.' && file_name[1] == '/') {
+
+    if(dir_name[dir_name.length()-1] == '/')
+      return dir_name + file_name.substr(2);
+    else
+      return dir_name + file_name.substr(1);
+  }
+
+  // file name has full path already
+  if(file_name.find(dir_name) != std::string::npos)
+    return file_name;
+
+  if(dir_name[dir_name.length()-1] != '/')
+    return dir_name + "/" + file_name;
+
+  return dir_name + file_name;
+}
+
   /**
    * Returns the name of the file which an instruction belongs to.
    */
   Value* getFileName(Instruction* I) {
 
-    StringRef name = "Unknown";
+    std::string name = "Unknown";
+    std::string dirName = "";
 
     // get debug information to retrieve file name
     const DebugLoc &location = I->getDebugLoc();
     if( location ) {
       auto *Scope = cast<DIScope>( location->getScope() );
-      if(Scope)
-         name = Scope->getFilename();
+      if(Scope) {
+         name = Scope->getFilename().str();
+         dirName = Scope->getDirectory().str();
+         name = createAbsoluteFileName(dirName, name);
+      }
     }
 
     Function* F = I->getFunction();
@@ -96,8 +132,8 @@ StringRef demangleName(StringRef name) {
   }
 
 /**
- * Returns name of the function under instrumentation.
- * The name is retrieved later at runtime.
+ * Returns name of the function under instrumentation
+ * as a value. The name is retrieved later at runtime.
  */
 Value* getFuncName(Function & F) {
   StringRef name = demangleName(F.getName());
@@ -107,6 +143,18 @@ Value* getFuncName(Function & F) {
 
   IRBuilder<> IRB(F.getEntryBlock().getFirstNonPHI());
   return IRB.CreateGlobalStringPtr(name, "func_name");
+}
+
+/**
+ * Return function name as a string
+ */
+StringRef getFuncNameStr(Function & F) {
+  StringRef name = demangleName(F.getName());
+  auto idx = name.find('(');
+  if(idx != StringRef::npos)
+    name = name.substr(0, idx);
+
+  return name;
 }
 
   /**
