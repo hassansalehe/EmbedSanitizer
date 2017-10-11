@@ -10,9 +10,15 @@
 #include <thread>
 #include <unordered_map>
 #include <algorithm>
+#include <set>
+#include "race.h"
 
 using namespace std;
 
+/**
+ * Namespace which contains utility functions for manipulating data
+ * race reporting metadata.
+ */
 namespace etsan {
 
 static mutex racePrintLock;
@@ -21,6 +27,23 @@ static mutex stackFrameLock;
 
 // Temporary location for Race reporting metadata:
 static unordered_map<unsigned int, vector<char*>> callStack;
+
+// Keeps list of races
+static set<Race, race_compare> races;
+
+// for printing all races in the list "races"
+void printRaces() {
+
+  string msg;
+
+  for(auto & race : races) {
+    race.createRaceMessage(msg);
+  }
+
+  racePrintLock.lock();
+  cout << msg; // print to standard output
+  racePrintLock.unlock();
+}
 
 /**
  * Pushes a function name to a call stack of a thread
@@ -31,7 +54,7 @@ void pushFunction(char* funcName) {
 
   stackFrameLock.lock();
   callStack[tid].push_back(funcName);
-  //printf("EmbedSanitizer: function entry at %s\n", funcName);
+  //printf("EmbedSanitizer: function entry: %s\n", funcName);
   stackFrameLock.unlock();
 }
 
@@ -50,6 +73,14 @@ void popFunction(char * funcName) {
     cout << "Something wrong with Function Stack: " << funcName << "\n";
 }
 
+vector<char*> getStack(unsigned int tid) {
+
+    stackFrameLock.lock();
+    vector<char*> & stackFrame = callStack[tid];
+    stackFrameLock.unlock();
+
+    return stackFrame;
+}
 
 /**
  * Prints the call stack of a thread when a race is found
@@ -74,56 +105,26 @@ string printStack() {
   return ss.str();
 }
 
-
-/**
- * Constructs a nicely reading message about the race
- * and stores the result in "msg" string. */
-void createRaceMessage(string& msg,
-                       string type,
-                       int lineNo,
-                       void * objName,
-                       void * fileName
-) {
-
-  unsigned int tid = (unsigned int)pthread_self();
-  stringstream ss;
-
-  ss << "=============================================\n"  ;
-  ss << "\033[1;32mEMBEDSANITIZER Race report\033[m\n"     ;
-  ss << "\033[1;31m A race detected at: " << (char*)fileName << "\033[m\n";
-  ss << "  At line number: "     << lineNo          << "\n";
-  ss << "  Thread (tid=" << tid << ") " << type << " \""   ;
-  ss << (char*)objName  << "\"\n"                          ;
-  ss << "                                             \n"  ;
-  ss << "\033[1;33m Call stack:   \033[m              \n"  ;
-  ss << printStack();
-  ss << "=============================================\n"  ;
-
-  msg.append( ss.str() );
-}
-
 /**
  * Report data race on a read operation. */
 void reportRaceRead(int lineNo, void * objName, void * fileName) {
 
-  string msg;
-  createRaceMessage(msg, "read", lineNo, objName, fileName);
+  unsigned int tid = (unsigned int)pthread_self();
+  Race race(tid, lineNo, "read", (char*)objName, (char *)fileName);
+  race.trace = getStack(tid);
 
-  racePrintLock.lock();
-  cout << msg; // print to standard output
-  racePrintLock.unlock();
+  races.insert(race);
 }
 
 /**
  * Report data race on a write operation. */
 void reportRaceWrite(int lineNo, void * objName, void * fileName) {
 
-  string msg;
-  createRaceMessage(msg, "write", lineNo, objName, fileName);
+  unsigned int tid = (unsigned int)pthread_self();
+  Race race(tid, lineNo, "write", (char*)objName, (char *)fileName);
+  race.trace = getStack(tid);
 
-  racePrintLock.lock();
-  cout << msg; // print to standard output
-  racePrintLock.unlock();
+  races.insert(race);
 }
 
 }  // etsan
