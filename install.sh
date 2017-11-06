@@ -16,6 +16,9 @@ BuildDir=$HOME/build
 SrcDir=$HOME/build/llvm
 InstallDir=$HOME/arm
 
+# Check if relevant downloads are available
+if [! -f "./.status" ]; then
+
 rm -rf $BuildDir
 rm -rf $InstallDir
 
@@ -26,8 +29,10 @@ mkdir -p $InstallDir
 reportIfSuccessful() {
 if [ $? -eq 0 ]; then
     echo -e "\033[1;32m Done.\033[m"
+    return 0
 else
     echo -e "\033[1;31m Fail.\033[m"
+    return 1
 fi
 }
 
@@ -93,6 +98,9 @@ rm test-suite-${version}.src.tar.xz
 
 # Report if everything is OK so far
 reportIfSuccessful;
+if [ $? -eq 0 ]; then touch "$home/.status"; fi
+
+fi # end of downloads
 
 # Step 2:
 #   Copy EmbedSanitizer files to ./build/llvm
