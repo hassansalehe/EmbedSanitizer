@@ -16,6 +16,7 @@ BuildDir=$HOME/build
 SrcDir=$HOME/build/llvm
 InstallDir=$HOME/arm
 
+# The help function
 Usage() {
   echo ""
   echo -e "\033[1;36m EmbedSanitizer: A Runtime Race Detection Tool for 32-bit Embedded ARM\033[m"
@@ -31,21 +32,6 @@ Usage() {
   echo " (c) 2017, Hassan Salehe Matar"
   echo " See LICENSE.md for license information."
 }
-
-# Check command arguments
-if [ $# -gt 0 ]; then
-  if [ $1 == "--help" ]; then
-    Usage
-    exit 0
-  elif [ $1 == "--clean" ]; then
-    rm -rf $BuildDir
-    rm -rf $InstallDir
-    exit 0
-  elif [ $1 == "--new" ]; then
-    rm -rf $BuildDir
-    rm -rf $InstallDir
-  fi
-fi
 
 # Checks if previous command was successful.
 # Exit script otherwise.
@@ -93,6 +79,21 @@ CheckPrerequisites() {
     fi
   fi
 }
+
+# Check command arguments
+if [ $# -gt 0 ]; then
+  if [ $1 == "--help" ]; then
+    Usage
+    exit 0
+  elif [ $1 == "--clean" ]; then
+    rm -rf $BuildDir
+    rm -rf $InstallDir
+    exit 0
+  elif [ $1 == "--new" ]; then
+    rm -rf $BuildDir
+    rm -rf $InstallDir
+  fi
+fi
 
 # Check if relevant downloads are available
 if [ ! -f "./.status" ]; then
@@ -167,8 +168,8 @@ echo -e "\033[1;95m Downloading LLVM/Clang files from remote server\033[m"
   rm test-suite-${version}.src.tar.xz
 
   # Report if everything is OK so far
-  reportIfSuccessful;
-  touch "$home/.status"; # Log success status
+  reportIfSuccessful
+  touch "$HOME/.status" # Log success status
 
 fi # end of downloads
 
