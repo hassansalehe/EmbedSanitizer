@@ -16,25 +16,56 @@ BuildDir=$HOME/build
 SrcDir=$HOME/build/llvm
 InstallDir=$HOME/arm
 
-# Check if relevant downloads are available
-if [! -f "./.status" ]; then
+Usage() {
+  echo ""
+  echo -e "\033[1;36m EmbedSanitizer: A Runtime Race Detection Tool for 32-bit Embedded ARM\033[m"
+  echo ""
+  echo -e "\033[1;32m ./install.sh <option>\033[m"
+  echo "  e.g.   ./install.sh --new"
+  echo ""
+  echo "  <option> can be empty or one of the following:"
+  echo "    --help   : prints this help message"
+  echo "    --clean  : cleans the whole installation"
+  echo "    --new    : For a complete new installation"
+  echo ""
+  echo " (c) 2017, Hassan Salehe Matar"
+  echo " See LICENSE.md for license information."
+}
 
-rm -rf $BuildDir
-rm -rf $InstallDir
+# Check command arguments
+if [ $# -gt 0 ]; then
+  if [ $1 == "--help" ]; then
+    Usage
+    exit 0
+  elif [ $1 == "--clean" ]; then
+    rm -rf $BuildDir
+    rm -rf $InstallDir
+    exit 0
+  elif [ $1 == "--new" ]; then
+    rm -rf $BuildDir
+    rm -rf $InstallDir
+  fi
+fi
 
-mkdir -p $BuildDir
-mkdir -p $SrcDir
-mkdir -p $InstallDir
-
+# Checks if previous command was successful.
+# Exit script otherwise.
 reportIfSuccessful() {
 if [ $? -eq 0 ]; then
     echo -e "\033[1;32m Done.\033[m"
     return 0
 else
     echo -e "\033[1;31m Fail.\033[m"
-    return 1
+    exit 1
 fi
 }
+
+
+# Check if relevant downloads are available
+if [ ! -f "./.status" ]; then
+
+mkdir -p $BuildDir
+mkdir -p $SrcDir
+mkdir -p $InstallDir
 
 # Step 1:
 #   Download original(unmodified) LLVM/Clang files from a remote serer.
