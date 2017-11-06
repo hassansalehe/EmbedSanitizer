@@ -26,7 +26,7 @@
 
 using namespace std;
 
-typedef void * Address;
+typedef const void * Address;
 typedef unsigned int ThreadID;
 typedef vector<int> VectorClock;
 

@@ -60,7 +60,7 @@ public:
   /**
    * Prints the call stack of a thread when a race is found
    */
-  string printStack() {
+  string printStack() const {
 
     stringstream ss;
 
@@ -77,7 +77,7 @@ public:
   /**
    * Constructs a nicely reading message about the race
    * and stores the result in "msg" string. */
-  void createRaceMessage(string& msg) {
+  void createRaceMessage(string& msg) const {
     stringstream ss;
 
     ss << "=============================================\n"  ;
