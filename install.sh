@@ -52,6 +52,7 @@ CheckPrerequisites() {
   if [ $? -ne 0 ]; then
     echo -e "\033[1;31mERROR! wget missing\033[m"
     read -p "Do you want to install wget (root password is needed) " -n 1 -r
+    echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then sudo apt-get install wget; fi
   fi
 
@@ -59,6 +60,7 @@ CheckPrerequisites() {
   if [ $? -ne 0 ]; then
     echo -e "\033[1;31mERROR! tar missing\033[m"
     read -p "Do you want to install tar (root password is needed) " -n 1 -r
+    echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then sudo apt-get install tar; fi
   fi
 
@@ -67,6 +69,7 @@ CheckPrerequisites() {
   if [ $? -ne 0 ]; then
     echo -e "\033[1;31mERROR! cmake missing\033[m"
     read -p "Do you want to install cmake (root password is needed)? " -n 1 -r
+    echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       cd /usr/src
       sudo wget https://cmake.org/files/v3.9/cmake-3.9.5.tar.gz
@@ -76,6 +79,19 @@ CheckPrerequisites() {
       sudo make
       sudo make install
       cd $HOME
+    fi
+  fi
+
+  # check if cross-compiler utilities are installed
+  which arm-linux-gnueabi-g++ > /dev/null
+  if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mERROR! cross-compiler utilities missing\033[m"
+    read -p "Do you want to install them (root password is needed)? " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      sudo apt-get install -y gcc-multilib g++-multilib
+      sudo apt-get install -y libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi
+      sudo apt-get install -y libncurses5-dev gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
     fi
   fi
 }
