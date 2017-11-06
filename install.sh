@@ -59,13 +59,12 @@ else
 fi
 }
 
-
 # Check if relevant downloads are available
 if [ ! -f "./.status" ]; then
 
-mkdir -p $BuildDir
-mkdir -p $SrcDir
-mkdir -p $InstallDir
+  mkdir -p $BuildDir
+  mkdir -p $SrcDir
+  mkdir -p $InstallDir
 
 # Step 1:
 #   Download original(unmodified) LLVM/Clang files from a remote serer.
@@ -74,62 +73,62 @@ mkdir -p $InstallDir
 #   will later be copied to .build/llvm
 echo -e "\033[1;95m Downloading LLVM/Clang files from remote server\033[m"
 
-cd $SrcDir
-wget -c http://releases.llvm.org/${version}/llvm-${version}.src.tar.xz
-tar xf llvm-${version}.src.tar.xz --strip-components 1
-rm llvm-${version}.src.tar.xz
+  cd $SrcDir
+  wget -c http://releases.llvm.org/${version}/llvm-${version}.src.tar.xz
+  tar xf llvm-${version}.src.tar.xz --strip-components 1
+  rm llvm-${version}.src.tar.xz
 
-cd $SrcDir
-mkdir -p tools/clang
-cd tools/clang
-wget -c http://releases.llvm.org/${version}/cfe-${version}.src.tar.xz
-tar xf cfe-${version}.src.tar.xz --strip-components 1
-rm cfe-${version}.src.tar.xz
+  cd $SrcDir
+  mkdir -p tools/clang
+  cd tools/clang
+  wget -c http://releases.llvm.org/${version}/cfe-${version}.src.tar.xz
+  tar xf cfe-${version}.src.tar.xz --strip-components 1
+  rm cfe-${version}.src.tar.xz
 
-mkdir -p tools/extra
-cd tools/extra
-wget -c http://releases.llvm.org/${version}/clang-tools-extra-${version}.src.tar.xz
-tar xf clang-tools-extra-${version}.src.tar.xz --strip-components 1
-rm clang-tools-extra-${version}.src.tar.xz
+  mkdir -p tools/extra
+  cd tools/extra
+  wget -c http://releases.llvm.org/${version}/clang-tools-extra-${version}.src.tar.xz
+  tar xf clang-tools-extra-${version}.src.tar.xz --strip-components 1
+  rm clang-tools-extra-${version}.src.tar.xz
 
-cd $SrcDir
-mkdir -p projects/compiler-rt
-cd projects/compiler-rt
-wget -c http://releases.llvm.org/${version}/compiler-rt-${version}.src.tar.xz
-tar xf compiler-rt-${version}.src.tar.xz --strip-components 1
-rm compiler-rt-${version}.src.tar.xz
+  cd $SrcDir
+  mkdir -p projects/compiler-rt
+  cd projects/compiler-rt
+  wget -c http://releases.llvm.org/${version}/compiler-rt-${version}.src.tar.xz
+  tar xf compiler-rt-${version}.src.tar.xz --strip-components 1
+  rm compiler-rt-${version}.src.tar.xz
 
-cd $SrcDir
-mkdir -p projects/libcxx
-cd projects/libcxx
-wget -c http://releases.llvm.org/${version}/libcxx-${version}.src.tar.xz
-tar xf libcxx-${version}.src.tar.xz --strip-components 1
-rm libcxx-${version}.src.tar.xz
+  cd $SrcDir
+  mkdir -p projects/libcxx
+  cd projects/libcxx
+  wget -c http://releases.llvm.org/${version}/libcxx-${version}.src.tar.xz
+  tar xf libcxx-${version}.src.tar.xz --strip-components 1
+  rm libcxx-${version}.src.tar.xz
 
-cd $SrcDir
-mkdir -p projects/libcxxabi
-cd projects/libcxxabi
-wget -c http://releases.llvm.org/${version}/libcxxabi-${version}.src.tar.xz
-tar xf libcxxabi-${version}.src.tar.xz --strip-components 1
-rm libcxxabi-${version}.src.tar.xz
+  cd $SrcDir
+  mkdir -p projects/libcxxabi
+  cd projects/libcxxabi
+  wget -c http://releases.llvm.org/${version}/libcxxabi-${version}.src.tar.xz
+  tar xf libcxxabi-${version}.src.tar.xz --strip-components 1
+  rm libcxxabi-${version}.src.tar.xz
 
-cd $SrcDir
-mkdir -p projects/libunwind
-cd projects/libunwind
-wget -c http://releases.llvm.org/${version}/libunwind-${version}.src.tar.xz
-tar xf libunwind-${version}.src.tar.xz --strip-components 1
-rm libunwind-${version}.src.tar.xz
+  cd $SrcDir
+  mkdir -p projects/libunwind
+  cd projects/libunwind
+  wget -c http://releases.llvm.org/${version}/libunwind-${version}.src.tar.xz
+  tar xf libunwind-${version}.src.tar.xz --strip-components 1
+  rm libunwind-${version}.src.tar.xz
 
-cd $SrcDir
-mkdir -p projects/test-suite
-cd projects/test-suite
-wget -c http://releases.llvm.org/${version}/test-suite-${version}.src.tar.xz
-tar xf test-suite-${version}.src.tar.xz --strip-components 1
-rm test-suite-${version}.src.tar.xz
+  cd $SrcDir
+  mkdir -p projects/test-suite
+  cd projects/test-suite
+  wget -c http://releases.llvm.org/${version}/test-suite-${version}.src.tar.xz
+  tar xf test-suite-${version}.src.tar.xz --strip-components 1
+  rm test-suite-${version}.src.tar.xz
 
-# Report if everything is OK so far
-reportIfSuccessful;
-if [ $? -eq 0 ]; then touch "$home/.status"; fi
+  # Report if everything is OK so far
+  reportIfSuccessful;
+  touch "$home/.status"; # Log success status
 
 fi # end of downloads
 
