@@ -50,13 +50,48 @@ fi
 # Checks if previous command was successful.
 # Exit script otherwise.
 reportIfSuccessful() {
-if [ $? -eq 0 ]; then
+  if [ $? -eq 0 ]; then
     echo -e "\033[1;32m Done.\033[m"
     return 0
-else
+  else
     echo -e "\033[1;31m Fail.\033[m"
     exit 1
-fi
+  fi
+}
+
+# Checks if necessary packages are installed in the machine
+# Installs the packages if user approves.
+CheckPrerequisites() {
+  which wget > /dev/null
+  if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mERROR! wget missing\033[m"
+    read -p "Do you want to install wget (root password is needed) " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then sudo apt-get install wget; fi
+  fi
+
+  which tar > /dev/null
+  if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mERROR! tar missing\033[m"
+    read -p "Do you want to install tar (root password is needed) " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then sudo apt-get install tar; fi
+  fi
+
+  # check if cmake is installed
+  which cmake > /dev/null
+  if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mERROR! cmake missing\033[m"
+    read -p "Do you want to install cmake (root password is needed)? " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      cd /usr/src
+      sudo wget https://cmake.org/files/v3.9/cmake-3.9.5.tar.gz
+      sudo tar -xvzf cmake-3.9.5.tar.gz
+      cd cmake-3.9.5
+      sudo ./bootstrap
+      sudo make
+      sudo make install
+      cd $HOME
+    fi
+  fi
 }
 
 # Check if relevant downloads are available
@@ -65,6 +100,11 @@ if [ ! -f "./.status" ]; then
   mkdir -p $BuildDir
   mkdir -p $SrcDir
   mkdir -p $InstallDir
+
+
+# Step 0:
+#   Check for prerequisites and install necessary packages
+  CheckPrerequisites
 
 # Step 1:
 #   Download original(unmodified) LLVM/Clang files from a remote serer.
