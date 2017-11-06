@@ -104,10 +104,12 @@ if [ $# -gt 0 ]; then
   elif [ $1 == "--clean" ]; then
     rm -rf $BuildDir
     rm -rf $InstallDir
+    rm -rf $HOME/.status
     exit 0
   elif [ $1 == "--new" ]; then
     rm -rf $BuildDir
     rm -rf $InstallDir
+    rm -rf $HOME/.status
   fi
 fi
 
