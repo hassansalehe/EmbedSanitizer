@@ -15,6 +15,7 @@ HOME=`pwd`
 BuildDir=$HOME/build
 SrcDir=$HOME/build/llvm
 InstallDir=$HOME/arm
+procNo=`cat /proc/cpuinfo | grep processor | wc -l`
 
 # The help function
 Usage() {
@@ -76,7 +77,7 @@ CheckPrerequisites() {
       sudo tar -xvzf cmake-3.9.5.tar.gz
       cd cmake-3.9.5
       sudo ./bootstrap
-      sudo make
+      sudo make -j $procNo
       sudo make install
       cd $HOME
     fi
