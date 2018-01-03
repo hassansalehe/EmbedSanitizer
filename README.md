@@ -4,7 +4,7 @@ Due to the complexity of the ThreadSanitizer's race detection runtime, EmbedSani
 implements its own runtime by applying FastTrack (see: [link](https://users.soe.ucsc.edu/~cormac/papers/pldi09.pdf)) which
 is an efficient and precise race detection algorithm relying on *happens-before* concepts.
 
-Please consult relevant paper for further information [here](https://link.springer.com/chapter/10.1007/978-3-319-67531-2_24).
+Please consult relevant tool paper for further information [here](https://link.springer.com/chapter/10.1007/978-3-319-67531-2_24).
 ### Usage Summary
 EmbedSanitizer can be installed as part of LLVM/Clang infrastructure in a development machine; 
 presumably an x86_64 platform. Then it can be launched in similar manner to ThreadSanitizer; 
