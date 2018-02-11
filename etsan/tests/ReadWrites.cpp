@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////
 //
-// Copyright (c) 2017, Hassan Salehe Matar
+// Copyright (c) 2017 - 2018, Hassan Salehe Matar
 //
 // See LICENSE file for information about the license.
 //
@@ -15,8 +15,6 @@
 #include <pthread.h>
 #include <iostream>
 #include "tsan_interface.h"
-
-using namespace std;
 
 void * threadFunction(void * data) {
   __tsan_write4((void *) 0x03);
@@ -35,7 +33,7 @@ int main() {
   int i = 0;
 
   data[i] = i+1;
-  pthread_create( &threads[i], NULL, threadFunction, &data[i]);
+  pthread_create( &threads[i], NULL, threadFunction, &data[i] );
   pthread_join( threads[i], NULL );
 
   __tsan_write4((void *) 0x03);

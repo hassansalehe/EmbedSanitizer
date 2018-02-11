@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// (c) 2017 - Hassan Salehe Matar, Koc University
+// (c) 2017 - 2018 Hassan Salehe Matar, Koc University
 //            Email: hmatar@ku.edu.tr
 //===----------------------------------------------------------------------===//
 
@@ -24,11 +24,9 @@
 #include <mutex>
 #include <atomic>
 
-using namespace std;
-
 typedef const void * Address;
 typedef unsigned int ThreadID;
-typedef vector<int> VectorClock;
+typedef std::vector<int> VectorClock;
 
 #define TID(x) ((x & 0xFF000000) >> 24)
 #define CLOCK(x) (x & (0x00FFFFFF))
@@ -44,12 +42,12 @@ typedef vector<int> VectorClock;
 #endif
 
 #define error(x,msg) {	\
-  if(!x.Racy) {		\
-   race_message(msg);	\
-   x.Racy = true;	\
- } 			\
+  if(!x.Racy) {     		\
+    race_message(msg);	\
+    x.Racy = true;    	\
+  }               			\
   VS.mGuard.unlock(); 	\
-  return;		\
+  return;           		\
  }
 
 #define FastPathReturn { VS.mGuard.unlock(); return reportIsRacy;}
@@ -64,7 +62,7 @@ static unsigned int NumThreads = 0;
  * This variable tracks availability
  * of multiple threads in the program. No race is
  * detected if there are no multithreads in the program */
-atomic_int isConcurrent{0};
+std::atomic_int isConcurrent{0};
 
 /********************************************/
 /**   Thread state related metadata        **/
@@ -94,10 +92,10 @@ class TStates {
 public:
 
   /* A lock to acquire before accesing C */
-  mutex mGuard; // lock
+  std::mutex mGuard; // lock
 
   // Threads states
-  unordered_map<ThreadID, ThreadState> C;
+  std::unordered_map<ThreadID, ThreadState> C;
 //#ifdef STATS
   ~TStates() {
     printf("Threads: %d\n", C.size());
@@ -118,19 +116,17 @@ void UpdateThreadClocks() {
 
   int nThreads =  TS.C.size();
 
-  for(auto tv = TS.C.begin(); tv != TS.C.end(); tv++) {
+  for (auto tv = TS.C.begin(); tv != TS.C.end(); tv++) {
 
     ThreadState& t = tv->second;
-
-    int idx = t.C.size();
-    for(; idx < nThreads; idx++) {
+    for (int idx = t.C.size(); idx < nThreads; idx++) {
       int epoch = idx << 24;
-      if(t.tid == idx)
+      if (t.tid == idx) {
         epoch = epoch + 1;
-
+      }
       t.C.push_back( epoch );
-    }
-  }
+    } // end for
+  } // end for
 }
 
 /**
@@ -142,7 +138,7 @@ ThreadState & getState(ThreadID tid) {
 
   TS.mGuard.lock(); // protect
 
-  if(TS.C.find(tid) == TS.C.end()) {
+  if (TS.C.find(tid) == TS.C.end()) {
 
     TS.C[tid] = ThreadState();
     st = &TS.C[tid];
@@ -151,15 +147,13 @@ ThreadState & getState(ThreadID tid) {
     st->epoch = ((st->tid << 24) + 1);
 
     UpdateThreadClocks();
-    (st->C)[st->tid] = st->epoch;
-
+    ( st->C )[ st->tid ] = st->epoch;
     NumThreads = TS.C.size() + 1; // track # of threads
-  }
-  else
+  } else {
     st = &TS.C[tid];
+  }
 
   TS.mGuard.unlock(); // release protection
-
   return *st;
 }
 
@@ -167,8 +161,7 @@ ThreadState & getState(ThreadID tid) {
  * Returns the State of the current thread
  */
 ThreadState & getThreadState() {
-
-  ThreadID tid = (ThreadID)pthread_self();
+  ThreadID tid = ( ThreadID )pthread_self();
   return getState(tid);
 }
 
@@ -181,7 +174,6 @@ class VarState {
   public:
     int W, R;
     VectorClock Rvc; // used iff R == READ_SHARED
-
     bool Racy = false;
 };
 
@@ -190,10 +182,10 @@ class VStates {
 public:
 
   /* A lock to acquire before accesing Vstates */
-  mutex mGuard;
+  std::mutex mGuard;
 
   // Variables states
-  unordered_map<Address, VarState> Vstates;
+  std::unordered_map<Address, VarState> Vstates;
 
 //#ifdef STATS
   unsigned int reads{0};
@@ -204,11 +196,10 @@ public:
     printf("Reads: %u\n", (unsigned int)reads);
     printf("Writes: %u\n", (unsigned int)writes);
     int races = 0;
-    for(auto addr = Vstates.begin(); addr != Vstates.end(); addr++)
-       if((addr->second).Racy)
-         races++;
+    for (auto addr = Vstates.begin(); addr != Vstates.end(); addr++) {
+       if ( ( addr->second ).Racy ) races++;
+    }
     printf("Races: %d\n", races);
-
   }
 //#endif
 };
@@ -226,21 +217,21 @@ VarState & getVarState(Address addr, bool isWrite) {
 
   VS.mGuard.lock(); // protect
 
-  if(VS.Vstates.find(addr) == VS.Vstates.end()) {
+  if (VS.Vstates.find(addr) == VS.Vstates.end()) {
     ThreadState & t = getThreadState();
     VarState vs;
     vs.W = (t.tid << 24);
     vs.R = (t.tid << 24);
-    if(isWrite)
+    if (isWrite) {
       vs.W = t.epoch;
-    else
+    } else {
       vs.R = t.epoch;
+    }
     VS.Vstates[addr] = vs;
     vstt = &VS.Vstates[addr];
-  }
-  else
+  } else {
     vstt = &VS.Vstates[addr];
-
+  }
   VS.mGuard.unlock(); // release protection
 
   return *vstt;
@@ -259,10 +250,10 @@ class LStates {
 public:
 
   /* A lock to acquire before accesing L */
-  mutex mGuard;
+  std::mutex mGuard;
 
   // Locks states
-  unordered_map<Address, LockState> L;
+  std::unordered_map<Address, LockState> L;
 
 //#ifdef STATS
   ~LStates() {
@@ -279,8 +270,9 @@ LStates LS; // instance for locks states metadata
  */
 void newVectorClock(VectorClock& VC, int size) {
   VC.resize( size );
-  for(int t = 0; t < size; t++)
+  for (int t = 0; t < size; t++) {
     VC[t] = (t << 24); // =0?
+  }
 }
 
 /**
@@ -290,8 +282,7 @@ void newVectorClock(VectorClock& VC, int size) {
 void ExtendVectorClock(VectorClock& C, int totalThreads) {
 
   int tid = C.size();
-
-  for(; tid < totalThreads; tid++) {
+  for (; tid < totalThreads; tid++) {
     int epoch = tid << 24;
     C.push_back(epoch);
   }
@@ -306,7 +297,7 @@ void ExtendVectorClocks(VectorClock& C1, VectorClock& C2) {
   int t_size = C1.size();
   int l_size = C2.size();
 
-  int size = max(t_size, l_size);
+  int size   = max(t_size, l_size);
 
   ExtendVectorClock(C1, size);
   ExtendVectorClock(C2, size);
@@ -322,7 +313,7 @@ LockState& getLockState(Address lock) {
 
   LS.mGuard.lock(); // protect access
 
-  if(LS.L.find(lock) == LS.L.end()) {
+  if (LS.L.find(lock) == LS.L.end()) {
     LS.L[lock] = LockState();
     newVectorClock(LS.L[lock].L, NumThreads);
   }

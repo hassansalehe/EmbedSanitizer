@@ -435,14 +435,17 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
       else if (isa<LoadInst>(Inst) || isa<StoreInst>(Inst))
         LocalLoadsAndStores.push_back(&Inst);
       else if (isa<CallInst>(Inst) || isa<InvokeInst>(Inst)) {
-        if (CallInst *CI = dyn_cast<CallInst>(&Inst)) { // EmbedSanitizer modification
+        // EmbedSanitizer modification:
+        if (CallInst *CI = dyn_cast<CallInst>(&Inst)) {
 
-          EmbedSanitizer::InstrIfSynchronization(Inst); // EmbedSanitizer: check for synchronizations
+          // EmbedSanitizer: check for synchronizations
+          EmbedSanitizer::InstrIfSynchronization(Inst);
 
           maybeMarkSanitizerLibraryCallNoBuiltin(CI, TLI);
         }
-        if (isa<MemIntrinsic>(Inst))
+        if (isa<MemIntrinsic>(Inst)) {
           MemIntrinCalls.push_back(&Inst);
+        }
         HasCalls = true;
         chooseInstructionsToInstrument(LocalLoadsAndStores, AllLoadsAndStores,
                                        DL);
@@ -499,11 +502,12 @@ bool ThreadSanitizer::runOnFunction(Function &F) {
     Res = true;
 
     // instrument main function to report races
-    if(EmbedSanitizer::getFuncNameStr(F) == "main") {
+    if (EmbedSanitizer::getFuncNameStr(F) == "main") {
 
       EscapeEnumerator Emain(F, "tsan_cleanup_report", ClHandleCxxExceptions);
       while (IRBuilder<> *AtExit = Emain.Next()) {
-        AtExit->CreateCall(TsanMainFuncExit, {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
+        AtExit->CreateCall(TsanMainFuncExit,
+            {IRB.CreatePointerCast(func_name, IRB.getInt8PtrTy())});
       }
     }
   }

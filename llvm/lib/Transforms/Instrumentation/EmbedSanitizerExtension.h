@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// (c) 2017 - Hassan Salehe Matar, Koc University
+// (c) 2017, 2018 - Hassan Salehe Matar, Koc University
 //            Email: hmatar@ku.edu.tr
 //===----------------------------------------------------------------------===//
 
@@ -53,8 +53,6 @@
 #include <string>
 #include <cxxabi.h>
 
-using namespace llvm;
-
 // Implements some of the instrumentation callbacks for
 // synchronization events of a program in ThreadSanitizer.
 // Particularly, it extends ThreadSanitizer to serve the
@@ -67,80 +65,76 @@ namespace EmbedSanitizer {
    * pthread_join, pthread_mutex_lock, etc) and inserts
    * race detection callbacks to capture the HB dependencies.
    */
-  void InstrIfSynchronization(Instruction & Inst) {
+  void InstrIfSynchronization(llvm::Instruction & Inst) {
 
-    CallInst *CI = dyn_cast<CallInst>(&Inst);
-    if( !CI ) return; // return if inconsistence (null)
+    llvm::CallInst *CI = llvm::dyn_cast<llvm::CallInst>(&Inst);
+    if ( !CI ) return; // return if inconsistence (null)
 
-    Function *F = CI->getCalledFunction();
-    if( !F ) return; // return if inconsistent function (null)
+    llvm::Function *F = CI->getCalledFunction();
+    if ( !F ) return; // return if inconsistent function (null)
 
-    StringRef name = F->getName();
-    IRBuilder<> IRB(&Inst);
-    Module * M = Inst.getModule();
+    llvm::StringRef name = F->getName();
+    llvm::IRBuilder<> IRB(&Inst);
+    llvm::Module *M = Inst.getModule();
 
-    if(name.startswith("pthread_create")) {
+    if (name.startswith("pthread_create")) {
 
       // get pointer to child id
-      Value * threadIdPtr = CI->getArgOperand(0);
+      llvm::Value *threadIdPtr = CI->getArgOperand(0);
 
       // I struggled for 2 hours. Big-up to this SO question:
       // http://stackoverflow.com/q/33327097/1952879
-      IRB.SetInsertPoint(Inst.getNextNode());
+      IRB.SetInsertPoint( Inst.getNextNode() );
 
       // Create callback function
-      Function * tsan_create = checkSanitizerInterfaceFunction(
-            M->getOrInsertFunction(
-            "__tsan_thread_create", IRB.getVoidTy(),
-            IRB.getInt8PtrTy(), nullptr));
+      llvm::Function *tsan_create = checkSanitizerInterfaceFunction(
+          M->getOrInsertFunction(
+              "__tsan_thread_create", IRB.getVoidTy(),
+              IRB.getInt8PtrTy(), nullptr));
 
       // insert the callback function
       IRB.CreateCall(tsan_create, {threadIdPtr} );
-    }
-    else if(name.startswith("pthread_join")) {
+    } else if (name.startswith("pthread_join")) {
 
       // get pointer to child id
-      Value * childThreadIdAddr = CI->getArgOperand(0);
+      llvm::Value *childThreadIdAddr = CI->getArgOperand(0);
 
       IRB.SetInsertPoint(Inst.getNextNode());
 
       // Create callback function
-      Function * tsan_join = checkSanitizerInterfaceFunction(
-         M->getOrInsertFunction(
-             "__tsan_thread_join", IRB.getVoidTy(),
-             IRB.getInt8PtrTy(), nullptr));
+      llvm::Function *tsan_join = checkSanitizerInterfaceFunction(
+          M->getOrInsertFunction(
+              "__tsan_thread_join", IRB.getVoidTy(),
+              IRB.getInt8PtrTy(), nullptr));
 
       // insert the callback function
       IRB.CreateCall(tsan_join, {childThreadIdAddr} );
-    }
-    else if(name.startswith("pthread_mutex_lock")) {
+    } else if (name.startswith("pthread_mutex_lock")) {
 
-      Value * lockAddr = CI->getArgOperand(0); // lock pointer
-
+      llvm::Value * lockAddr = CI->getArgOperand(0); // lock pointer
       IRB.SetInsertPoint(Inst.getNextNode());
 
       // Create callback function
-      Function * tsan_lock = checkSanitizerInterfaceFunction(
-         M->getOrInsertFunction(
-            "__tsan_thread_lock", IRB.getVoidTy(),
-            IRB.getInt8PtrTy(), nullptr));
+      llvm::Function *tsan_lock = checkSanitizerInterfaceFunction(
+          M->getOrInsertFunction(
+              "__tsan_thread_lock", IRB.getVoidTy(),
+              IRB.getInt8PtrTy(), nullptr));
 
       // insert the callback function
       IRB.CreateCall(tsan_lock, {lockAddr} );
-    }
-    else if(name.startswith("pthread_mutex_unlock")) {
+    } else if (name.startswith("pthread_mutex_unlock")) {
 
-      Value * lockAddr = CI->getArgOperand(0); // lock pointer
+      llvm::Value * lockAddr = CI->getArgOperand(0); // lock pointer
 
       // Create callback function
-      Function * tsan_unlock = checkSanitizerInterfaceFunction(
-         M->getOrInsertFunction(
-             "__tsan_thread_unlock",
-             IRB.getVoidTy(),
-             IRB.getInt8PtrTy(), nullptr));
+      llvm::Function * tsan_unlock = checkSanitizerInterfaceFunction(
+          M->getOrInsertFunction(
+              "__tsan_thread_unlock",
+              IRB.getVoidTy(),
+              IRB.getInt8PtrTy(), nullptr));
 
       // insert the callback function
       IRB.CreateCall(tsan_unlock, {lockAddr} );
-    }
-  }
-}
+    } // end if
+  } // end function
+} // end namespace

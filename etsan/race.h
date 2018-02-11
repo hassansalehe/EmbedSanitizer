@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// (c) 2017 - Hassan Salehe Matar, Koc University
+// (c) 2017, 2018 - Hassan Salehe Matar, Koc University
 //            Email: hmatar@ku.edu.tr
 //===----------------------------------------------------------------------===//
 
@@ -23,16 +23,16 @@ class Race {
 public:
   unsigned int tid;
   int lineNo;
-  string accessType;
-  string objName;
-  string fileName;
-  vector<char*> trace;
+  std::string accessType;
+  std::string objName;
+  std::string fileName;
+  std::vector<char *> trace;
 
   Race(unsigned int _tid,
        int _lineNo,
-       string _accessType,
-       char* _objName,
-       char * _fileName) {
+       std::string _accessType,
+       char *_objName,
+       char *_fileName) {
 
     tid = _tid;
     lineNo = _lineNo;
@@ -60,13 +60,13 @@ public:
   /**
    * Prints the call stack of a thread when a race is found
    */
-  string printStack() const {
+  std::string printStack() const {
 
-    stringstream ss;
+    std::stringstream ss;
 
     int depth = 1;
-    for( char * func : trace) {
-      string msg(depth, ' ');
+    for (char * func : trace) {
+      std::string msg(depth, ' ');
       depth += 4;
       ss << msg << " '--->" << func << "(...)" << endl;
     }
@@ -77,8 +77,8 @@ public:
   /**
    * Constructs a nicely reading message about the race
    * and stores the result in "msg" string. */
-  void createRaceMessage(string& msg) const {
-    stringstream ss;
+  void createRaceMessage(std::string &msg) const {
+    std::stringstream ss;
 
     ss << "=============================================\n"  ;
     ss << "\033[1;32mEMBEDSANITIZER Race report\033[m\n"     ;
@@ -102,15 +102,16 @@ public:
 struct race_compare {
   bool operator() (const Race& lhs, const Race& rhs) const {
 
-    if(lhs.fileName == rhs.fileName) {
-      if(lhs.lineNo < rhs.lineNo)
+    if (lhs.fileName == rhs.fileName) {
+      if (lhs.lineNo < rhs.lineNo) {
         return -1;
-      else if (lhs.lineNo > rhs.lineNo)
+      } else if (lhs.lineNo > rhs.lineNo) {
         return 1;
-      else if(lhs.accessType == rhs.accessType)
+      } else if (lhs.accessType == rhs.accessType) {
         return 0;
-      else
+      } else {
         return -1;
+      }
     }
 
     return lhs.fileName < rhs.fileName;

@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// (c) 2017 - Hassan Salehe Matar, Koc University
+// (c) 2017, 2018 - Hassan Salehe Matar, Koc University
 //            Email: hmatar@ku.edu.tr
 //===----------------------------------------------------------------------===//
 
@@ -30,22 +30,21 @@ class FileDictionary {
 
   std::unordered_set<char *> files;
 
-  void inserFile(char * file_name) {
+  void inserFile(char *file_name) {
     files.insert(file_name);
   }
 
-  bool exists(char * file_name) {
+  bool exists(char *file_name) {
     return files.find(file_name) != files.end();
   }
 
-  void saveModule(char * module_path) {
+  void saveModule(char *module_path) {
 
     std::string path(module_path);
     module_paths.insert(path);
   }
 
 }; // FileDictionary
-
 
 }; // etsan
 #endif // ETSAN_FILEDICTIONARY_H_

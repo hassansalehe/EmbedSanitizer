@@ -2,7 +2,7 @@
 
 #########################################################################
 #
-# Copyright (c) 2017 - Hassan Salehe Matar
+# Copyright (c) 2017, 2018 - Hassan Salehe Matar
 #
 #  License: Follows License of LLVM/Clang. Read the licence file LICENSE.md
 #
@@ -19,7 +19,9 @@ tSanLib=libclang_rt.tsan_cxx-x86_64
 # Compile and build static library
 g++ -c  tsan_interface.cc -o ${tSanLib}.o -static -std=c++11 -pthread -fpermissive
 #arm-linux-gnueabi-g++ -c tsan_fasttrack.cpp -o ${tSanLib}.o -static
-#../bin/bin/clang++ -c tsan_fasttrack.cpp -o ${tSanLib}.o -static -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi -I/usr/arm-linux-gnueabi/include
+#../bin/bin/clang++ -c tsan_fasttrack.cpp -o ${tSanLib}.o -static   \
+# -I/usr/arm-linux-gnueabi/include/c++/5/arm-linux-gnueabi  \
+# -I/usr/arm-linux-gnueabi/include
 ar rcs ${tSanLib}.a ${tSanLib}.o
 
 # Dummy C library

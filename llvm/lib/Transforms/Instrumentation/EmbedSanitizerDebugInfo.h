@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// (c) 2017 - Hassan Salehe Matar, Koc University
+// (c) 2017, 2018 - Hassan Salehe Matar, Koc University
 //            Email: hmatar@ku.edu.tr
 //===----------------------------------------------------------------------===//
 
@@ -53,8 +53,6 @@
 #include <string>
 #include <cxxabi.h>
 
-using namespace llvm;
-
 // Implements helper functions for manipulating debugging
 // information that is sent to the runtime for races
 // reporting of EmbedSanitizer.
@@ -63,14 +61,14 @@ namespace EmbedSanitizer {
 /**
  * Demangles names of attributes, functions, etc
  */
-StringRef demangleName(StringRef name) {
+llvm::StringRef demangleName(llvm::StringRef name) {
   int status = -1;
   std::string name_(name.str());
   char* d =abi::__cxa_demangle(name_.c_str(), nullptr, nullptr, &status);
-  if(! status) {
-    StringRef ab(d);
+  if ( !status ) {
+    llvm::StringRef ab(d);
     return ab;
-  }
+  } // else
   return name;
 }
 
@@ -78,55 +76,58 @@ StringRef demangleName(StringRef name) {
  * Returns file name with absolute path
  */
 std::string createAbsoluteFileName(
-  std::string & dir_name,
-  std::string &file_name) {
+    std::string &dir_name,
+    std::string &file_name) {
 
-  if(dir_name.size() <= 0 || file_name.size() <= 0)
+  if (dir_name.size() <= 0 || file_name.size() <= 0) {
     return file_name;
-
+  }
   // has full path already
-  if(file_name[0] == '/')
+  if (file_name[0] == '/') {
     return file_name;
+  }
 
-  if(file_name[0] == '.' && file_name[1] == '/') {
+  if (file_name[0] == '.' && file_name[1] == '/') {
 
-    if(dir_name[dir_name.length()-1] == '/')
+    if (dir_name[dir_name.length()-1] == '/') {
       return dir_name + file_name.substr(2);
-    else
+    } else {
       return dir_name + file_name.substr(1);
+    }
   }
 
   // file name has full path already
-  if(file_name.find(dir_name) != std::string::npos)
+  if (file_name.find(dir_name) != std::string::npos) {
     return file_name;
+  }
 
-  if(dir_name[dir_name.length()-1] != '/')
+  if(dir_name[dir_name.length()-1] != '/') {
     return dir_name + "/" + file_name;
-
+  }
   return dir_name + file_name;
 }
 
   /**
    * Returns the name of the file which an instruction belongs to.
    */
-  Value* getFileName(Instruction* I) {
+  llvm::Value* getFileName(llvm::Instruction *I) {
 
     std::string name = "Unknown";
     std::string dirName = "";
 
     // get debug information to retrieve file name
-    const DebugLoc &location = I->getDebugLoc();
-    if( location ) {
-      auto *Scope = cast<DIScope>( location->getScope() );
-      if(Scope) {
-         name = Scope->getFilename().str();
-         dirName = Scope->getDirectory().str();
-         name = createAbsoluteFileName(dirName, name);
+    const llvm::DebugLoc &location = I->getDebugLoc();
+    if ( location ) {
+      auto *aScope = llvm::cast<llvm::DIScope>( location->getScope() );
+      if (aScope) {
+         name    = aScope->getFilename().str();
+         dirName = aScope->getDirectory().str();
+         name    = createAbsoluteFileName(dirName, name);
       }
     }
 
-    Function* F = I->getFunction();
-    IRBuilder<> IRB(F->getEntryBlock().getFirstNonPHI());
+    llvm::Function *F = I->getFunction();
+    llvm::IRBuilder<> IRB(F->getEntryBlock().getFirstNonPHI());
 
     return IRB.CreateGlobalStringPtr(name, "fName");
   }
@@ -135,25 +136,25 @@ std::string createAbsoluteFileName(
  * Returns name of the function under instrumentation
  * as a value. The name is retrieved later at runtime.
  */
-Value* getFuncName(Function & F) {
-  StringRef name = demangleName(F.getName());
+llvm::Value* getFuncName(llvm::Function &F) {
+  llvm::StringRef name = demangleName(F.getName());
   auto idx = name.find('(');
-  if(idx != StringRef::npos)
+  if (idx != llvm::StringRef::npos) {
     name = name.substr(0, idx);
-
-  IRBuilder<> IRB(F.getEntryBlock().getFirstNonPHI());
+  }
+  llvm::IRBuilder<> IRB( F.getEntryBlock().getFirstNonPHI() );
   return IRB.CreateGlobalStringPtr(name, "func_name");
 }
 
 /**
  * Return function name as a string
  */
-StringRef getFuncNameStr(Function & F) {
-  StringRef name = demangleName(F.getName());
+llvm::StringRef getFuncNameStr(llvm::Function &F) {
+  llvm::StringRef name = demangleName(F.getName());
   auto idx = name.find('(');
-  if(idx != StringRef::npos)
+  if (idx != llvm::StringRef::npos) {
     name = name.substr(0, idx);
-
+  }
   return name;
 }
 
@@ -161,33 +162,40 @@ StringRef getFuncNameStr(Function & F) {
    * Returns the name of the memory location involved.
    * By object, this refers to the name of the variable.
    */
-  Value * getObjectName(Value *V, Instruction* I, const DataLayout &DL) {
-    Value* obj = GetUnderlyingObject(V, DL);
+  llvm::Value * getObjectName(
+      llvm::Value *V,
+      llvm::Instruction *I,
+      const llvm::DataLayout &DL) {
 
-    Function* F = I->getFunction();
-    IRBuilder<> IRB(F->getEntryBlock().getFirstNonPHI());
+    llvm::Value *obj  = GetUnderlyingObject(V, DL);
+    llvm::Function *F = I->getFunction();
+    llvm::IRBuilder<> IRB( F->getEntryBlock().getFirstNonPHI() );
 
-    if( !obj )
+    if ( !obj ) {
       return IRB.CreateGlobalStringPtr("unknown", "variable");
-
-    return IRB.CreateGlobalStringPtr(obj->getName(), "variable");
+    } else {
+      return IRB.CreateGlobalStringPtr(obj->getName(), "variable");
+    }
   }
 
   /**
    * Retrieves the line number of the instruction
    * being instrumented.
    */
-  Value* getLineNumber(Instruction* I) {
+  llvm::Value* getLineNumber(llvm::Instruction *I) {
 
     if (auto Loc = I->getDebugLoc()) { // Here I is an LLVM instruction
-      IRBuilder<> IRB(I);
+      llvm::IRBuilder<> IRB(I);
       unsigned Line = Loc->getLine();
-      return ConstantInt::get(Type::getInt32Ty(I->getContext()), Line);
-    }
-    else {
-      Constant* zero = ConstantInt::get(Type::getInt32Ty(I->getContext()), 0);
+      return llvm::ConstantInt::get(
+          llvm::Type::getInt32Ty(I->getContext()),
+          Line);
+    } else {
+      llvm::Constant* zero = llvm::ConstantInt::get(
+          llvm::Type::getInt32Ty(I->getContext()),
+          0);
       return zero;
     }
   }
 
-} // EmbedSanitizer
+} // end EmbedSanitizer

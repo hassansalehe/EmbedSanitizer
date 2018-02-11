@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////
 //
-// Copyright (c) 2017, Hassan Salehe Matar
+// Copyright (c) 2017 - 2018, Hassan Salehe Matar
 //
 // See LICENSE file for information about the license.
 //
@@ -12,8 +12,6 @@
 
 #include <iostream>
 #include "tsan_interface.h"
-
-using namespace std;
 
 int main() {
   __tsan_read4((void*)0x03);

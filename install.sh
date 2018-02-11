@@ -2,7 +2,7 @@
 
 #########################################################################
 #
-# Copyright (c) 2017 - Hassan Salehe Matar
+# Copyright (c) 2017, 2018 - Hassan Salehe Matar
 #
 #  License: Follows License of LLVM/Clang. Read the license file Licence.md
 #
@@ -30,7 +30,7 @@ Usage() {
   echo "    --clean  : cleans the whole installation"
   echo "    --new    : For a complete new installation"
   echo ""
-  echo " (c) 2017, Hassan Salehe Matar"
+  echo " (c) 2017 - 2018, Hassan Salehe Matar"
   echo " See LICENSE.md for license information."
 }
 

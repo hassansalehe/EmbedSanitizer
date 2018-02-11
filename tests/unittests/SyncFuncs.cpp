@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////
 //
-// Copyright (c) 2017, Hassan Salehe Matar
+// Copyright (c) 2017 - 2018, Hassan Salehe Matar
 //
 // See LICENSE file for information about the license.
 //
