@@ -101,7 +101,7 @@ bool ft_write(VarState & x, ThreadState & t) {
       reportIsRacy = true;
     }
   } else {                       // Write Shared       0.1%
-    for (int u = 0; u < /*NumThreads*/min(x.Rvc.size(), t.C.size()); u++) {
+    for (int u = 0; u < /*NumThreads*/std::min(x.Rvc.size(), t.C.size()); u++) {
       if (x.Rvc[u] > t.C[u]) {// (SLOW PATH)
         reportIsRacy = true; // RACE!
       }
@@ -125,7 +125,7 @@ void ft_acquire(ThreadState& t, LockState& lock) {
 
   // Join: Ct := Ct U Lm
   for (int i = 0; i < lock.L.size(); i++) {
-    t.C[i] = max(t.C[i], lock.L[i]);
+    t.C[i] = std::max(t.C[i], lock.L[i]);
   }
 
   LS.mGuard.unlock(); // release protection
@@ -159,7 +159,7 @@ void ft_fork(ThreadState & t, ThreadState & u){
 
   // Join: Cu := Cu U Ct
   for (int i = 0; i < u.C.size(); i++) {
-    u.C[i] = max(u.C[i], t.C[i]);
+    u.C[i] = std::max(u.C[i], t.C[i]);
   }
 
   u.updateEpoch(); // invariant
@@ -184,7 +184,7 @@ void ft_join(ThreadState & t, ThreadState & u){
 
   // Join: Ct := Ct U Cu
   for (int i = 0; i < t.C.size(); i++) {
-    t.C[i] = max(t.C[i], u.C[i]);
+    t.C[i] = std::max(t.C[i], u.C[i]);
   }
 
   t.updateEpoch(); // invariant

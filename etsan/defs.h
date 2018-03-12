@@ -23,6 +23,7 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <algorithm>
 
 typedef const void * Address;
 typedef unsigned int ThreadID;
@@ -297,7 +298,7 @@ void ExtendVectorClocks(VectorClock& C1, VectorClock& C2) {
   int t_size = C1.size();
   int l_size = C2.size();
 
-  int size   = max(t_size, l_size);
+  int size   = std::max(t_size, l_size);
 
   ExtendVectorClock(C1, size);
   ExtendVectorClock(C2, size);

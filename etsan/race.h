@@ -68,7 +68,7 @@ public:
     for (char * func : trace) {
       std::string msg(depth, ' ');
       depth += 4;
-      ss << msg << " '--->" << func << "(...)" << endl;
+      ss << msg << " '--->" << func << "(...)" << std::endl;
     }
 
     return ss.str();
