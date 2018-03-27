@@ -10,15 +10,15 @@
 
 # clone release version 4.0 of LLVM/Clang
 version=4.0.0
-HOME=`pwd`
+EsanHomeDir=`pwd`
 
-BuildDir=$HOME/build
-SrcDir=$HOME/build/llvm
+BuildDir=$EsanHomeDir/build
+SrcDir=$EsanHomeDir/build/llvm
 
 # Installation directory is created under Linux user's home directory.
 # In Ubuntu by default and if user name is Umut then EmbedSanitizer 
 # binary will be inside /home/Umut/.embedsanitizer 
-InstallDir=~/.embedsanitizer
+InstallDir=${HOME}/.embedsanitizer
 
 procNo=`cat /proc/cpuinfo | grep processor | wc -l`
 
@@ -84,7 +84,7 @@ CheckPrerequisites() {
       sudo ./bootstrap
       sudo make -j $procNo
       sudo make install
-      cd $HOME
+      cd $EsanHomeDir
     fi
   fi
 
@@ -110,12 +110,12 @@ if [ $# -gt 0 ]; then
   elif [ $1 == "--clean" ]; then
     rm -rf $BuildDir
     rm -rf $InstallDir
-    rm -rf $HOME/.status
+    rm -rf $EsanHomeDir/.status
     exit 0
   elif [ $1 == "--new" ]; then
     rm -rf $BuildDir
     rm -rf $InstallDir
-    rm -rf $HOME/.status
+    rm -rf $EsanHomeDir/.status
   fi
 fi
 
@@ -193,13 +193,13 @@ echo -e "\033[1;95m Downloading LLVM/Clang files from remote server\033[m"
 
   # Report if everything is OK so far
   reportIfSuccessful
-  touch "$HOME/.status" # Log success status
+  touch "$EsanHomeDir/.status" # Log success status
 
 fi # end of downloads
 
 # Step 2:
 #   Copy EmbedSanitizer files to ./build/llvm
-cp -r $HOME/llvm/* $SrcDir/
+cp -r $EsanHomeDir/llvm/* $SrcDir/
 
 # Step 3:
 #   Go to "build" and configure cmake for compiling LLVM/Clang.
@@ -223,7 +223,7 @@ reportIfSuccessful;
 
 # Step 5: build and install the embedded tsan runtime
 echo -e "\033[1;95m Building the embedded static race detection runtime\033[m"
-cd $HOME/etsan
+cd $EsanHomeDir/etsan
 ./install.sh
 
 reportIfSuccessful;
