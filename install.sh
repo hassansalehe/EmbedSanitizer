@@ -14,7 +14,12 @@ HOME=`pwd`
 
 BuildDir=$HOME/build
 SrcDir=$HOME/build/llvm
-InstallDir=$HOME/arm
+
+# Installation directory is created under Linux user's home directory.
+# In Ubuntu by default and if user name is Umut then EmbedSanitizer 
+# binary will be inside /home/Umut/.embedsanitizer 
+InstallDir=~/.embedsanitizer
+
 procNo=`cat /proc/cpuinfo | grep processor | wc -l`
 
 # The help function
@@ -222,3 +227,5 @@ cd $HOME/etsan
 ./install.sh
 
 reportIfSuccessful;
+echo 
+echo -e "\033[1;32m EmbedSanitizer is installed in ${InstallDir}\033[m"
