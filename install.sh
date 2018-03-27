@@ -73,9 +73,9 @@ CheckPrerequisites() {
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       cd /usr/src
-      sudo wget https://cmake.org/files/v3.9/cmake-3.9.5.tar.gz
-      sudo tar -xvzf cmake-3.9.5.tar.gz
-      cd cmake-3.9.5
+      sudo wget https://cmake.org/files/v3.10/cmake-3.10.3.tar.gz
+      sudo tar -xvzf cmake-3.10.3.tar.gz
+      cd cmake-3.10.3
       sudo ./bootstrap
       sudo make -j $procNo
       sudo make install
