@@ -21,12 +21,14 @@
 class Race {
 
 public:
-  unsigned int tid;
-  int lineNo;
-  std::string accessType;
-  std::string objName;
-  std::string fileName;
-  std::vector<char *> trace;
+  unsigned int          tid;
+  int                   lineNo;
+  std::string           accessType;
+  std::string           objName;
+  std::string           fileName;
+  std::vector<char *>   trace;
+  bool                  isMessageCreated; /* if true don't construct the string
+                                             for printing. */
 
   Race(unsigned int _tid,
        int _lineNo,
@@ -39,6 +41,8 @@ public:
     accessType = _accessType;
     objName = _objName;
     fileName = _fileName;
+
+    isMessageCreated = false;
   }
 
   /*
@@ -77,7 +81,11 @@ public:
   /**
    * Constructs a nicely reading message about the race
    * and stores the result in "msg" string. */
-  void createRaceMessage(std::string &msg) const {
+  bool createRaceMessage(std::string &msg) {
+    if (true == isMessageCreated) {
+      return true; // already created before
+    }
+
     std::stringstream ss;
 
     ss << "=============================================\n"  ;
@@ -92,6 +100,8 @@ public:
     ss << "=============================================\n"  ;
 
     msg.append( ss.str() );
+    isMessageCreated = true;
+    return false; // not printed yet
   }
 
 };

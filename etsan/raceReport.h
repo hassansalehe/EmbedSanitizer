@@ -47,8 +47,11 @@ static std::set<Race, race_compare> races;
 // for printing all races in the list "races"
 void printRaces() {
   std::string msg;
-  for (auto & race : races) {
-    race.createRaceMessage(msg);
+  for (auto race = races.rbegin(); race != races.rend(); ++race) {
+    if (true == race->createRaceMessage(msg)) {
+      // this and subsequent races already printed
+      break;
+    }
   }
 
   racePrintLock.lock();
@@ -124,6 +127,7 @@ void reportRaceRead(int lineNo, void *objName, void *fileName) {
   race.trace = getStack(tid);
 
   races.insert(race);
+  printRaces();
 }
 
 /**
@@ -135,6 +139,7 @@ void reportRaceWrite(int lineNo, void *objName, void *fileName) {
   race.trace = getStack(tid);
 
   races.insert(race);
+  printRaces();
 }
 
 }  // etsan
