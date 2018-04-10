@@ -47,11 +47,8 @@ static std::set<Race, race_compare> races;
 // for printing all races in the list "races"
 void printRaces() {
   std::string msg;
-  for (auto race = races.rbegin(); race != races.rend(); ++race) {
-    if (true == race->createRaceMessage(msg)) {
-      // this and subsequent races already printed
-      break;
-    }
+  for (auto & race : races) {
+    race.createRaceMessage(msg);
   }
 
   racePrintLock.lock();
