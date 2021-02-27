@@ -103,9 +103,7 @@ public:
     isMessageCreated = true;
     return false; // not printed yet
   }
-
 };
-
 
 /** Comparison functor for comparing between two race reports
  */
