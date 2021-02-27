@@ -81,8 +81,7 @@ void popFunction(char *funcName) {
     stackFrame.pop_back();
   }
   else {
-    std::cout << "Something wrong with Function Stack: "
-              << funcName << "\n";
+    std::cout << "Something wrong with Function Stack: " << funcName << "\n";
   }
 }
 
