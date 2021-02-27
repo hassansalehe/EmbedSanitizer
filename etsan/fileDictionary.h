@@ -24,10 +24,7 @@ namespace etsan {
  * races detected by EmbedSanitizer race detector.
  */
 class FileDictionary {
-
-
   std::set<std::string> module_paths;
-
   std::unordered_set<char *> files;
 
   void inserFile(char *file_name) {
@@ -39,11 +36,9 @@ class FileDictionary {
   }
 
   void saveModule(char *module_path) {
-
     std::string path(module_path);
     module_paths.insert(path);
   }
-
 }; // FileDictionary
 
 }; // etsan
