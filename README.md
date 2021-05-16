@@ -56,9 +56,10 @@ The compiler produces an ARM-compatible executable.
 
 **Note:**
 > Sometimes your program may not compile due to 'missing' library headers like `iostream`, `cstdlib` and `bits/config.h`. Therefore, you need to add appropriate include paths as in the example below.
-> ```bash
-> ./arm/bin/clang++ -o <executable_name> <your_program_name.cpp> -fsanitize=thread -I$(shell find /usr/arm-linux-gnueabi -name iostream | sed 's/\/iostream//g') -I$(shell find /usr/arm-linux-gnueabi/include -type d -name arm-linux-gnueabi) -I/usr/arm-linux-gnueabi/include
-> ```
+```bash
+>$  ./arm/bin/clang++ -o <executable_name> <your_program_name.cpp> -fsanitize=thread -I$(shell find /usr/arm-linux-gnueabi -name iostream | sed 's/\/iostream//g') -I$(shell find /usr/arm-linux-gnueabi/include -type d -name arm-linux-gnueabi) -I/usr/arm-linux-gnueabi/include
+```
+>
 
 #### (b) Running your program
 Once your program is instrumented and compiled by LLVM/Clang, you can run it in a 32-bit ARM platform. Alternatively, you can launch your program with the Qemu emulator:
