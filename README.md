@@ -34,7 +34,7 @@ to run your program but it may be very slow.
 ####  (a) Prerequisites
 This tool has been tested on x86_64 machine with Ubuntu 16.04.  Moreover, make sure that the following are installed in your platform.
 * LLVM/Clang, more information on how to install: http://llvm.org/docs/GettingStarted.html
-* The cross-compilers utilities. Use the commands below to install: 
+* The cross-compilers utilities. Use the commands below to install them: 
 ```bash
 >$ apt-get install -y gcc-multilib g++-multilib 
 >$ apt-get install -y libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi
