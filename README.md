@@ -1,15 +1,19 @@
 ## EmbedSanitizer: A Runtime Race Detection Tool for 32-bit Embedded ARM
-This tool extends ThreadSanitizer to do race detection for 32-bit ARM applications. 
+
+[![Build Status](https://github.com/hassansalehe/EmbedSanitizer/actions/workflows/C_Integration.yml/badge.svg)](https://github.com/hassansalehe/EmbedSanitizer/actions/workflows/C_Integration.yml)
+[![codecov](https://codecov.io/gh/hassansalehe/EmbedSanitizer/branch/master/graph/badge.svg?token=P67YW4H678)](https://codecov.io/gh/hassansalehe/EmbedSanitizer)
+
+This tool extends ThreadSanitizer to do race detection for 32-bit ARM applications.
 Due to the complexity of the ThreadSanitizer's race detection runtime, EmbedSanitizer
 implements its own runtime by applying FastTrack (see: [link](https://users.soe.ucsc.edu/~cormac/papers/pldi09.pdf)) which
 is an efficient and precise race detection algorithm relying on *happens-before* concepts.
 
 Please consult relevant tool paper for further information [here](https://link.springer.com/chapter/10.1007/978-3-319-67531-2_24).
 ### Usage Summary
-EmbedSanitizer can be installed as part of LLVM/Clang infrastructure in a development machine; 
-presumably an x86_64 platform. Then it can be launched in similar manner to ThreadSanitizer; 
-using a compiler flag _-fsanitize=thread_. Once the compiler produces your program's final 
-executable with EmbedSanitizer instrumentation, you can run on a target ARM 32-bit platform. 
+EmbedSanitizer can be installed as part of LLVM/Clang infrastructure in a development machine;
+presumably an x86_64 platform. Then it can be launched in similar manner to ThreadSanitizer;
+using a compiler flag _-fsanitize=thread_. Once the compiler produces your program's final
+executable with EmbedSanitizer instrumentation, you can run on a target ARM 32-bit platform.
 
 ```bash
 # Use the installed EmbedSanitizer in your development machine as part of Clang compiler
@@ -34,15 +38,15 @@ to run your program but it may be very slow.
 ####  (a) Prerequisites
 This tool has been tested on x86_64 machine with Ubuntu 16.04.  Moreover, make sure that the following are installed in your platform.
 * LLVM/Clang, more information on how to install: http://llvm.org/docs/GettingStarted.html
-* The cross-compilers utilities. Use the commands below to install them: 
+* The cross-compilers utilities. Use the commands below to install them:
 ```bash
->$ apt-get install -y gcc-multilib g++-multilib 
+>$ apt-get install -y gcc-multilib g++-multilib
 >$ apt-get install -y libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi
 >$ apt-get install -y libncurses5-dev gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
 ```
 
 #### (b) Installation
-To build and install, there is Bash script `install.sh` at the main directory of the project. 
+To build and install, there is Bash script `install.sh` at the main directory of the project.
 ```bash
 >$  ./install.sh
 ```
@@ -50,7 +54,7 @@ To build and install, there is Bash script `install.sh` at the main directory of
 #### (a) Compiling your program
 The `install.sh` script builds LLVM/Clang with EmbedSanitizer in it and installs it  in `arm` directory. Then you can compile your program from the main directory of the project using the command format below:
 ```bash
->$  ./arm/bin/clang++ -o <executable_name> <your_program_name.cpp> -fsanitize=thread 
+>$  ./arm/bin/clang++ -o <executable_name> <your_program_name.cpp> -fsanitize=thread
 ```
 The compiler produces an ARM-compatible executable.
 
