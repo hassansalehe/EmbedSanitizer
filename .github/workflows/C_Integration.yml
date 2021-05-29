@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Install gtest manually
-      run: sudo apt install googletest libgtest-dev
+      run: sudo apt install googletest libgtest-dev lcov
     - uses: actions/checkout@v2
 
     - name: Create Build Environment
@@ -40,19 +40,22 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config $BUILD_TYPE
 
-    - name: Test
+    - name: Run tests
       working-directory: ${{runner.workspace}}/build
       shell: bash
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -V -C $BUILD_TYPE
 
-    - name: Run Gcov
-      working-directory: ${{runner.workspace}}/build
+    - name: Run Gcov/Lcov and push report to Codecov
+      working-directory: ${{runner.workspace}}/
       shell: bash
       run: |
-        gcov ../race_test.cpp --object-directory ./CMakeFiles/race_test.dir/
-        bash <(curl -s https://codecov.io/bash) -X gcov
+        gcov -o . ./tests/race_test.cpp --object-directory ./build/CMakeFiles/race_test.dir/
+        lcov --directory . --capture --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
+        lcov --list coverage.info
+        bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Failed to upload to Codecov"
 
     #- name: Upload coverage to Codecov
     #  uses: codecov/codecov-action@v1
