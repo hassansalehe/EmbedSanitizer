@@ -52,7 +52,7 @@ jobs:
       shell: bash
       run: |
         gcov ../race_test.cpp --object-directory ./CMakeFiles/race_test.dir/
-        bash <(curl -s https://codecov.io/bash) -X gcov
+        bash <(curl -s https://codecov.io/bash)
 
     #- name: Upload coverage to Codecov
     #  uses: codecov/codecov-action@v1
