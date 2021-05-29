@@ -18,6 +18,7 @@ add_executable(race_test race_test.cpp)
 
 # Link executables with GoogleTest and pthread library
 target_link_libraries(race_test ${GTEST_LIBRARIES} pthread gtest_main)
+target_link_libraries(race_test gcov --coverage)
 
 # Add tests for Ctest
 add_test(test_race race_test)
