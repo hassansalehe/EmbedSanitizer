@@ -50,13 +50,12 @@ jobs:
     - name: Run Gcov
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: gcov ../race_test.cpp --object-directory ./CMakeFiles/race_test.dir/
+      run: |
+        gcov ../race_test.cpp --object-directory ./CMakeFiles/race_test.dir/
+        bash <(curl -s https://codecov.io/bash) -X gcov
 
-      #bash <(curl -s https://codecov.io/bash) -X gcov
-
-    - name: Upload coverage to Codecov
-      working-directory: ${{runner.workspace}}/build
-      uses: codecov/codecov-action@v1
-      with:
-        fail_ci_if_error: true
-        gcov_path_exclude: tests/
+    #- name: Upload coverage to Codecov
+    #  uses: codecov/codecov-action@v1
+    #  with:
+    #    fail_ci_if_error: true
+    #    gcov_path_exclude: tests/
