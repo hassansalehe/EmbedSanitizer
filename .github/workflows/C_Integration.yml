@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Install gtest manually
-      run: sudo apt install googletest libgtest-dev
+      run: sudo apt install googletest libgtest-dev lcov
     - uses: actions/checkout@v2
 
     - name: Create Build Environment
