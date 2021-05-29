@@ -11,6 +11,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 ## Include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../)
+add_compile_options(-fprofile-arcs -ftest-coverage)
 
 # Add executables
 add_executable(race_test race_test.cpp)
