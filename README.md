@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/hassansalehe/EmbedSanitizer/actions/workflows/C_Integration.yml/badge.svg)](https://github.com/hassansalehe/EmbedSanitizer/actions/workflows/C_Integration.yml)
 [![codecov](https://codecov.io/gh/hassansalehe/EmbedSanitizer/branch/master/graph/badge.svg?token=P67YW4H678)](https://codecov.io/gh/hassansalehe/EmbedSanitizer)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer?ref=badge_shield)
 
 This tool extends ThreadSanitizer to do race detection for 32-bit ARM applications.
 Due to the complexity of the ThreadSanitizer's race detection runtime, EmbedSanitizer
@@ -77,6 +78,9 @@ please refer to `tests/parsec_benchmarks/README.md` for more information on how 
 ### License
 Our license derives from that of LLVM/Clang project as we use its source codes. For more information, please read the file `LICENSE.md`.  
 Moreover, the benchmarks that we used for evaluation in `tests/parsec_benchmarks` have their own license from the PARSEC Benchmark suite.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer?ref=badge_large)
 
 ### Contact
 For any inquiries, suggestions or collaborations please contact `hassansalehe<at>gmail.com`
