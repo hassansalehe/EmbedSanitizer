@@ -53,7 +53,7 @@ jobs:
       run: |
         gcov -o . ./tests/race_test.cpp --object-directory ./build/CMakeFiles/race_test.dir/
         lcov --directory . --capture --output-file coverage.info
-        lcov --remove coverage.info '/usr/*' '/tests/*' --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
         lcov --list coverage.info
         bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Failed to upload to Codecov"
 
