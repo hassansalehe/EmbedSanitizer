@@ -48,10 +48,10 @@ jobs:
       run: ctest -V -C $BUILD_TYPE
 
     - name: Run Gcov
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/
       shell: bash
       run: |
-        gcov -o . ../race_test.cpp --object-directory ./CMakeFiles/race_test.dir/
+        gcov -o . ../race_test.cpp --object-directory ./build/CMakeFiles/race_test.dir/
         lcov --directory . --capture --output-file coverage.info
         lcov --remove coverage.info '/usr/*' --output-file coverage.info
         lcov --list coverage.info
