@@ -47,6 +47,11 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -V -C $BUILD_TYPE
 
+    - name: Run Gcov
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: gcov ../race_test.cpp --object-directory ./CMakeFiles/race_test.dir/
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
