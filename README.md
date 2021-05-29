@@ -1,4 +1,6 @@
 ## EmbedSanitizer: A Runtime Race Detection Tool for 32-bit Embedded ARM
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer?ref=badge_shield)
+
 This tool extends ThreadSanitizer to do race detection for 32-bit ARM applications. 
 Due to the complexity of the ThreadSanitizer's race detection runtime, EmbedSanitizer
 implements its own runtime by applying FastTrack (see: [link](https://users.soe.ucsc.edu/~cormac/papers/pldi09.pdf)) which
@@ -73,6 +75,9 @@ please refer to `tests/parsec_benchmarks/README.md` for more information on how 
 ### License
 Our license derives from that of LLVM/Clang project as we use its source codes. For more information, please read the file `LICENSE.md`.  
 Moreover, the benchmarks that we used for evaluation in `tests/parsec_benchmarks` have their own license from the PARSEC Benchmark suite.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhassansalehe%2FEmbedSanitizer?ref=badge_large)
 
 ### Contact
 For any inquiries, suggestions or collaborations please contact `hassansalehe<at>gmail.com`
