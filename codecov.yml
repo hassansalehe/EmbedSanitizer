@@ -1,2 +1,5 @@
+ignore:
+  - "tests/race_test.cpp"
+
 fixes:
    - "/home/runner/work/EmbedSanitizer/::"
