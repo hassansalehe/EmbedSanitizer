@@ -32,7 +32,7 @@ jobs:
       # Note the current convention is to use the -S and -B options here to specify source
       # and build directories, but this is only available with CMake 3.13 and higher.
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-      run: cmake $GITHUB_WORKSPACE/tests -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCODE_COVERAGE=ON -DENABLE_COVERAGE=ON
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCODE_COVERAGE=ON -DENABLE_COVERAGE=ON
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
@@ -48,14 +48,14 @@ jobs:
       run: ctest -V -C $BUILD_TYPE
 
     - name: Run Gcov/Lcov and push report to Codecov
-      working-directory: ${{runner.workspace}}/
+      working-directory: ${{runner.workspace}}
       shell: bash
       run: |
         gcov -o . ./tests/race_test.cpp --object-directory ./build/CMakeFiles/race_test.dir/
         lcov --directory . --capture --output-file coverage.info
         lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
         lcov --list coverage.info
-        bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Failed to upload to Codecov"
+        bash <(curl -s https://codecov.io/bash) -X gcov -f coverage.info || echo "Failed to upload to Codecov"
 
     #- name: Upload coverage to Codecov
     #  uses: codecov/codecov-action@v1
