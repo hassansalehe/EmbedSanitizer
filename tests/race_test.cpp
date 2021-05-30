@@ -8,6 +8,7 @@ class RaceTestFixture : public ::testing::Test {
  protected:
 
    std::shared_ptr<Race> race_obj_ptr;
+   race_compare functor;
 
    RaceTestFixture() {
      unsigned int tid = 123;
@@ -56,4 +57,45 @@ TEST_F(RaceTestFixture, CheckPrintStackWithTraces) {
 
   ASSERT_NE(std::string::npos, msg.find(rand_func_signature));
   ASSERT_FALSE(race_obj_ptr->isMessageCreated);
+}
+
+TEST_F(RaceTestFixture, CheckComparisonEqualRaces) {
+  const auto lhs = *race_obj_ptr;
+  const auto rhs = *race_obj_ptr;
+
+  ASSERT_FALSE(functor.operator()(lhs, rhs));
+}
+
+TEST_F(RaceTestFixture, CheckComparisonRacesLHSwithSmallerLineNum) {
+  auto lhs = *race_obj_ptr;
+  lhs.lineNo -= 1;
+  const auto rhs = *race_obj_ptr;
+
+  ASSERT_TRUE(functor.operator()(lhs, rhs));
+}
+
+
+TEST_F(RaceTestFixture, CheckComparisonRacesLHSwithBiggerLineNum) {
+  auto lhs = *race_obj_ptr;
+  lhs.lineNo += 1;
+  const auto rhs = *race_obj_ptr;
+
+  ASSERT_TRUE(functor.operator()(lhs, rhs));
+}
+
+
+TEST_F(RaceTestFixture, CheckComparisonRacesLHSwithDifferentAccessTypes) {
+  auto lhs = *race_obj_ptr;
+  lhs.accessType = "write";
+  const auto rhs = *race_obj_ptr;
+
+  ASSERT_TRUE(functor.operator()(lhs, rhs));
+}
+
+TEST_F(RaceTestFixture, CheckComparisonRacesLHSwithDifferentFileNames) {
+  auto lhs = *race_obj_ptr;
+  lhs.fileName = "some_other_file.cpp";
+  const auto rhs = *race_obj_ptr;
+
+  ASSERT_FALSE(functor.operator()(lhs, rhs));
 }
