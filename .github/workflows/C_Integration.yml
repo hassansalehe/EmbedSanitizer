@@ -48,12 +48,12 @@ jobs:
       run: ctest -V -C $BUILD_TYPE
 
     - name: Check where we are
-      working-directory: $GITHUB_WORKSPACE
+      working-directory: ${{github.workspace}}
       shell: bash
       run: pwd
 
     - name: Run Gcov/Lcov and push report to Codecov
-      working-directory: $GITHUB_WORKSPACE
+      working-directory: ${{github.workspace}}
       shell: bash
       run: |
         find ${{runner.workspace}}/build -iname '*.gcno' -exec cp {} ./ \;
