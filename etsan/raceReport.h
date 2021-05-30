@@ -15,7 +15,6 @@
 #ifndef __RACE_REPORT__H_
 #define __RACE_REPORT__H_
 
-#include <thread>
 #include <mutex>
 #include <iostream>
 #include <string>
