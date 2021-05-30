@@ -26,12 +26,10 @@ class RaceTestFixture : public ::testing::Test {
 };
 
 TEST_F(RaceTestFixture, IsMessageCreatedIsSetToFalse) {
-
   ASSERT_FALSE(race_obj_ptr->isMessageCreated);
 }
 
 TEST_F(RaceTestFixture, CheckRaceMessageIsCreated) {
-
   std::string msg;
 
   // false --> created message is not printed
@@ -41,4 +39,21 @@ TEST_F(RaceTestFixture, CheckRaceMessageIsCreated) {
   ASSERT_NE(std::string::npos, msg.find(race_obj_ptr->accessType));
   ASSERT_NE(std::string::npos, msg.find(race_obj_ptr->objName));
   ASSERT_NE(std::string::npos, msg.find(race_obj_ptr->fileName));
+}
+
+TEST_F(RaceTestFixture, CheckPrintStackWhenNoTraces) {
+  auto msg = race_obj_ptr->printStack();
+
+  ASSERT_TRUE(msg.empty());
+  ASSERT_FALSE(race_obj_ptr->isMessageCreated);
+}
+
+TEST_F(RaceTestFixture, CheckPrintStackWithTraces) {
+  char * rand_func_signature("void get_current_balance");
+
+  race_obj_ptr->trace.push_back(rand_func_signature);
+  auto msg = race_obj_ptr->printStack();
+
+  ASSERT_NE(std::string::npos, msg.find(rand_func_signature));
+  ASSERT_FALSE(race_obj_ptr->isMessageCreated);
 }
