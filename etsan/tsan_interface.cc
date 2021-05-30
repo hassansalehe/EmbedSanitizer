@@ -312,7 +312,7 @@ void __tsan_thread_create(void * childIdAddr) {
 
 void __tsan_thread_join(void * childIdAddr) {
 
-  unsigned int child_id = ((unsigned int)childIdAddr);
+  unsigned int child_id = reinterpret_cast<unsigned int>(childIdAddr);
   unsigned int parent_id = (unsigned int)pthread_self();
   ft_join( getThreadState(), getState(child_id) );
 }
