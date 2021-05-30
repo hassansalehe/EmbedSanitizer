@@ -47,11 +47,15 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -V -C $BUILD_TYPE
 
+    - name: Check where we are
+      working-directory: $GITHUB_WORKSPACE
+      shell: bash
+      run: pwd
+
     - name: Run Gcov/Lcov and push report to Codecov
       working-directory: $GITHUB_WORKSPACE
       shell: bash
       run: |
-        pwd
         find ${{runner.workspace}}/build -iname '*.gcno' -exec cp {} ./ \;
         find ${{runner.workspace}}/build -iname '*.gcda' -exec cp {} ./ \;
         gcov -o . ./tests/race_test.cpp --object-directory ./
