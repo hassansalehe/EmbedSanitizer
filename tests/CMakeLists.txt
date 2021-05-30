@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.10)
 # Set project name
 project(EmbedSanitizer)
 
-enable_testing()
-
 # Add GoogleTest
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
