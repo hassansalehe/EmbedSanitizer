@@ -37,6 +37,9 @@ TEST_F(RaceTestFixture, CheckRaceMessageIsCreated) {
   ASSERT_FALSE(race_obj_ptr->createRaceMessage(msg));
   ASSERT_TRUE(race_obj_ptr->isMessageCreated);
 
+  // true --> message was already created before
+  ASSERT_TRUE(race_obj_ptr->createRaceMessage(msg));
+
   ASSERT_NE(std::string::npos, msg.find(race_obj_ptr->accessType));
   ASSERT_NE(std::string::npos, msg.find(race_obj_ptr->objName));
   ASSERT_NE(std::string::npos, msg.find(race_obj_ptr->fileName));
