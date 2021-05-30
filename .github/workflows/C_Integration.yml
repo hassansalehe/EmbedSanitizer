@@ -48,10 +48,12 @@ jobs:
       run: ctest -V -C $BUILD_TYPE
 
     - name: Run Gcov/Lcov and push report to Codecov
-      working-directory: ${{runner.workspace}}
+      working-directory: $GITHUB_WORKSPACE
       shell: bash
       run: |
-        gcov -o . ./tests/race_test.cpp --object-directory ./build/CMakeFiles/race_test.dir/
+        find ${{runner.workspace}}/build -iname '*.gcno' -exec cp {} $GITHUB_WORKSPACE/ \;
+        find ${{runner.workspace}}/build -iname '*.gcda' -exec cp {} $GITHUB_WORKSPACE/ \;
+        gcov -o . ./tests/race_test.cpp --object-directory ./
         lcov --directory . --capture --output-file coverage.info
         lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
         lcov --list coverage.info
