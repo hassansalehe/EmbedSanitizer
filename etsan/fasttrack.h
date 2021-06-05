@@ -146,6 +146,7 @@ void ft_release(ThreadState& t, LockState& lock) {
 
   LS.mGuard.unlock(); // release protection
 
+  t.updateEpoch(); // invariant
   t.increment();
 }
 
