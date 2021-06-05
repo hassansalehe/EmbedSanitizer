@@ -70,7 +70,7 @@ TEST(FasttrackWriteTestFixture, ftWriteDetectNewRace) {
   // EXPECT_EQ(num_threads, variable_state.Rvc.size());
 }
 
-TEST(FasttrackWriteTestFixture, ftWriteCheckUpdateOnSharedWrite) {
+TEST(FasttrackWriteTestFixture, ftWriteCheckUpdateOnSharedRead) {
   VS.reads = 0;
   constexpr bool race_found = true;
   constexpr unsigned int num_threads = 5;
@@ -87,7 +87,7 @@ TEST(FasttrackWriteTestFixture, ftWriteCheckUpdateOnSharedWrite) {
   thread_state.C.reserve(num_threads);
 
   ft_write(variable_state, thread_state);
-  EXPECT_EQ(thread_state.epoch, variable_state.Rvc[tid]);
+  EXPECT_EQ(thread_state.epoch, variable_state.W);
 }
 
 TEST(FasttrackWriteTestFixture, ftWriteCheckExclusive) {
@@ -99,14 +99,15 @@ TEST(FasttrackWriteTestFixture, ftWriteCheckExclusive) {
 
   VarState variable_state;
   variable_state.R = (tid2 << 24) + 0;
+  variable_state.W = (tid2 << 24) + 1;
 
   ThreadState thread_state;
   thread_state.tid = tid;
   thread_state.epoch = 42;
 
   thread_state.C.reserve(num_threads);
-  thread_state.C[tid2] = variable_state.R;
+  thread_state.C[tid2] = variable_state.W - 1; //(x.W > C[tid2])
 
-  ft_write(variable_state, thread_state);
-  EXPECT_EQ(thread_state.epoch, variable_state.R);
+  EXPECT_EQ(race_found, ft_write(variable_state, thread_state));
+  EXPECT_EQ(thread_state.epoch, variable_state.W);
 }
