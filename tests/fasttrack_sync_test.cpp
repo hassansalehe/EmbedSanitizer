@@ -63,3 +63,47 @@ TEST(FasttrackSyncTestFixture, ftRelease) {
     }
   }
 }
+
+TEST(FasttrackSyncTestFixture, ftForkMaxClocksForChildThread) {
+  constexpr int num_threads = 5;
+  ThreadState parent_state;
+  parent_state.C = {0 << 24, (1 << 24) + 1, (2 << 24) + 2, (3 << 24) + 3};
+  parent_state.tid = 3;
+
+  ThreadState child_state;
+  child_state.C = {(0 << 24), (1 << 24), (2 << 24), (3 << 24), (4 << 24) + 4 };
+  child_state.tid = 4;
+
+  ft_fork(parent_state, child_state);
+
+  EXPECT_EQ(num_threads, child_state.C.size());
+  EXPECT_EQ(child_state.C.at(child_state.tid), child_state.epoch);
+  EXPECT_EQ(num_threads, parent_state.C.size());
+  EXPECT_EQ(parent_state.C.at(parent_state.tid), parent_state.epoch);
+
+  for (int i = 0; i < num_threads; ++i) {
+    EXPECT_EQ((i << 24) + i, child_state.C.at(i));
+  }
+}
+
+TEST(FasttrackSyncTestFixture, ftJoinMaxClocksForParentThread) {
+  constexpr int num_threads = 5;
+  ThreadState parent_state;
+  parent_state.C = {0 << 24, (1 << 24), (2 << 24), (3 << 24), (4 << 24) + 4 };
+  parent_state.tid = 3;
+
+  ThreadState child_state;
+  child_state.C = {(0 << 24), (1 << 24) + 1, (2 << 24) + 2, (3 << 24) + 3};
+  child_state.tid = 4;
+
+  ft_fork(parent_state, child_state);
+
+  EXPECT_EQ(num_threads, child_state.C.size());
+  EXPECT_EQ(child_state.C.at(child_state.tid), child_state.epoch);
+  EXPECT_EQ(num_threads, parent_state.C.size());
+  EXPECT_EQ(parent_state.C.at(parent_state.tid), parent_state.epoch);
+
+  for (int i = 0; i < num_threads; ++i) {
+    EXPECT_EQ((i << 24) + i, child_state.C.at(i));
+  }
+}
