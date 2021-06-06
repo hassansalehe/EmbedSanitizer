@@ -22,6 +22,8 @@ protected:
 
   DefsTestFixture() {
     TS.C.clear();
+    VS.Vstates.clear();
+    LS.L.clear();
   }
 
   ~DefsTestFixture() {}
@@ -93,6 +95,51 @@ TEST_F(DefsTestFixture, checkGetStateNewThread) {
   }
 }
 
+TEST_F(DefsTestFixture, checkGetStateExistingThread) {
+  auto& thread_state = getThreadState();
+  auto this_thread_id = TS.C.begin()->first;
+
+  auto& another_state = getState(this_thread_id);
+  EXPECT_EQ(1, TS.C.size());
+  EXPECT_EQ(&thread_state, &another_state);
+}
+
+TEST_F(DefsTestFixture, checkGetVarStateWhenDoesNotExistIsRead) {
+  Address address = (void *)(0x001);
+  auto isWrite = false;
+  const auto& variable_state = getVarState(address, isWrite);
+  const auto & thread_state = getThreadState();
+
+  EXPECT_EQ(thread_state.tid << 24, variable_state.W);
+  EXPECT_EQ(thread_state.epoch, variable_state.R);
+}
+
+TEST_F(DefsTestFixture, checkGetVarStateWhenDoesNotExistIsWrite) {
+  Address address = (void *)(0x001);
+  auto isWrite = true;
+  const auto& variable_state = getVarState(address, isWrite);
+  const auto & thread_state = getThreadState();
+
+  EXPECT_EQ(thread_state.epoch, variable_state.W);
+  EXPECT_EQ(thread_state.tid << 24, variable_state.R);
+}
+
+TEST_F(DefsTestFixture, checkGetVarStateWhenExists) {
+  Address address = (void *)(0x001);
+  auto isWrite = true;
+  EXPECT_EQ(0, VS.Vstates.size());
+
+  getVarState(address, isWrite);
+  EXPECT_EQ(1, VS.Vstates.size());
+
+  const auto& variable_state = getVarState(address, isWrite);
+  EXPECT_EQ(1, VS.Vstates.size());
+
+  const auto & thread_state = getThreadState();
+  EXPECT_EQ(thread_state.epoch, variable_state.W);
+  EXPECT_EQ(thread_state.tid << 24, variable_state.R);
+}
+
 // VectorClock related tests
 TEST_F(DefsTestFixture, checkCreationOfNewVectorClock) {
   VectorClock VC;
@@ -138,5 +185,31 @@ TEST_F(DefsTestFixture, checkExtend2VectorClocks) {
 
   for (int t = size2; t < max_size; t++) {
     EXPECT_EQ(0, (VC2.at(t) - (t << 24)));
+  }
+}
+
+TEST_F(DefsTestFixture, checkGetNewLockState) {
+  Address lock = (void *)(0x0123);
+  NumThreads = num_threads;
+
+  const auto & lock_state = getLockState(lock);
+  EXPECT_EQ(1, LS.L.size());
+  EXPECT_EQ(num_threads, lock_state.L.size());
+  for (int i = 0; i < num_threads; ++i) {
+    EXPECT_EQ(i << 24, lock_state.L.at(i)); // 0 clock values
+  }
+}
+
+TEST_F(DefsTestFixture, checkGetExistingLockState) {
+  Address lock = (void *)(0x0123);
+  NumThreads = num_threads;
+  getLockState(lock);
+  EXPECT_EQ(1, LS.L.size());
+
+  const auto & lock_state = getLockState(lock);
+  EXPECT_EQ(1, LS.L.size());
+  EXPECT_EQ(num_threads, lock_state.L.size());
+  for (int i = 0; i < num_threads; ++i) {
+    EXPECT_EQ(i << 24, lock_state.L.at(i)); // 0 clock values
   }
 }
