@@ -96,7 +96,7 @@ TEST(FasttrackSyncTestFixture, ftJoinMaxClocksForParentThread) {
   child_state.C = {(0 << 24), (1 << 24) + 1, (2 << 24) + 2, (3 << 24) + 3};
   child_state.tid = 4;
 
-  ft_fork(parent_state, child_state);
+  ft_join(parent_state, child_state);
 
   EXPECT_EQ(num_threads, child_state.C.size());
   EXPECT_EQ(child_state.C.at(child_state.tid), child_state.epoch);
@@ -104,6 +104,6 @@ TEST(FasttrackSyncTestFixture, ftJoinMaxClocksForParentThread) {
   EXPECT_EQ(parent_state.C.at(parent_state.tid), parent_state.epoch);
 
   for (int i = 0; i < num_threads; ++i) {
-    EXPECT_EQ((i << 24) + i, child_state.C.at(i));
+    EXPECT_EQ((i << 24) + i, parent_state.C.at(i)) << "value of i = " << i;
   }
 }
