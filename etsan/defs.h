@@ -99,7 +99,7 @@ public:
   std::unordered_map<ThreadID, ThreadState> C;
 //#ifdef STATS
   ~TStates() {
-    printf("Threads: %d\n", C.size());
+    printf("Threads: %lu\n", C.size());
   }
 //#endif
 };
@@ -193,7 +193,7 @@ public:
   unsigned int writes{0};
 
   ~VStates() {
-    printf("Addresses: %u\n", Vstates.size());
+    printf("Addresses: %lu\n", Vstates.size());
     printf("Reads: %u\n", (unsigned int)reads);
     printf("Writes: %u\n", (unsigned int)writes);
     int races = 0;
@@ -258,7 +258,7 @@ public:
 
 //#ifdef STATS
   ~LStates() {
-    printf("Locks: %u\n", L.size());
+    printf("Locks: %lu\n", L.size());
   }
 //#endif
 };
