@@ -18,12 +18,12 @@
 class RaceReportTestFixture : public ::testing::Test {
 protected:
   // arbitrary field values for testing
-  char *func_name1 = "function_1";
-  char *func_name2 = "function_2";
-  char *obj_name = "DummyObj";
-  char *file_name = "some_file.cpp";
-  char *read_access_type = "read";
-  char *write_access_type = "write";
+  const char *func_name1 = "function_1";
+  const char *func_name2 = "function_2";
+  const char *obj_name = "DummyObj";
+  const char *file_name = "some_file.cpp";
+  const char *read_access_type = "read";
+  const char *write_access_type = "write";
   int line_number = 42;
 
   RaceReportTestFixture() { etsan::callStack.clear(); }
@@ -40,11 +40,11 @@ TEST_F(RaceReportTestFixture, pushFunction) {
 
   ASSERT_NE(etsan::callStack.end(), c_back);
   ASSERT_EQ(1U, c_back->second.size());
-  ASSERT_STREQ(func_name1, c_back->second.at(0));
+  ASSERT_EQ(func_name1, c_back->second.at(0));
 
   etsan::pushFunction(func_name2);
   ASSERT_EQ(2U, c_back->second.size());
-  ASSERT_STREQ(func_name2, c_back->second.at(1));
+  ASSERT_EQ(func_name2, c_back->second.at(1));
 }
 
 TEST_F(RaceReportTestFixture, popFunction) {
@@ -62,7 +62,7 @@ TEST_F(RaceReportTestFixture, popFunction) {
   // popping the top function works
   etsan::popFunction(func_name2);
   EXPECT_EQ(1U, c_back->second.size());
-  ASSERT_STREQ(func_name1, c_back->second.at(0));
+  ASSERT_EQ(func_name1, c_back->second.at(0));
 }
 
 TEST_F(RaceReportTestFixture, getStack) {
@@ -80,7 +80,7 @@ TEST_F(RaceReportTestFixture, getStack) {
   etsan::pushFunction(func_name1);
   stack = etsan::getStack(tid);
   EXPECT_EQ(1U, stack.size());
-  ASSERT_STREQ(func_name1, stack.at(0));
+  ASSERT_EQ(func_name1, stack.at(0));
 }
 
 TEST_F(RaceReportTestFixture, printStack) {
