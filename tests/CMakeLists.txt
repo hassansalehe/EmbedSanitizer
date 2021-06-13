@@ -23,6 +23,9 @@ add_executable(race_test race_test.cpp)
 add_executable(race_report_test race_report_test.cpp)
 add_executable(tsan_interface_test tsan_interface_test.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../etsan/tsan_interface.cc)
 
+add_executable(lock_acquire_test LockAcquire.cpp)
+add_executable(lock_release_test LockRelease.cpp)
+
 # Link executables with GoogleTest and pthread library
 #target_link_libraries(race_test ${GTEST_LIBRARIES} pthread gtest_main)
 #target_link_libraries(race_test gcov --coverage)

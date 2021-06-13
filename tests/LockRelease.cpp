@@ -14,7 +14,7 @@
 #include <pthread.h>
 #include <iostream>
 #include <stdlib.h>
-#include "fasttrack.h"
+#include "etsan/fasttrack.h"
 
 int main() {
 
