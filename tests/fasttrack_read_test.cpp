@@ -72,7 +72,6 @@ TEST(FasttrackReadTestFixture, ftReadDetectNewRace) {
 
 TEST(FasttrackReadTestFixture, ftReadCheckUpdateOnSharedRead) {
   VS.reads = 0;
-  constexpr bool race_found = true;
   constexpr unsigned int num_threads = 5;
   constexpr int tid = 3;
 
@@ -92,7 +91,6 @@ TEST(FasttrackReadTestFixture, ftReadCheckUpdateOnSharedRead) {
 
 TEST(FasttrackReadTestFixture, ftReadCheckExclusive) {
   VS.reads = 0;
-  constexpr bool race_found = true;
   constexpr unsigned int num_threads = 5;
   constexpr int tid = 3;
   constexpr int tid2 = 1;

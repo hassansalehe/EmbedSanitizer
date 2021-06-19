@@ -66,7 +66,7 @@ std::atomic_int isConcurrent{0};
 //////////////////////////////////////////////
 class ThreadState {
   public:
-    int tid;
+    unsigned int tid;
     VectorClock C;
     int epoch; // invariant: epoch == C[tid]
 
@@ -103,12 +103,12 @@ TStates TS; // instance for threads states
 //       Use inside a critical section with the TS lock.
 void UpdateThreadClocks() {
 
-  int nThreads =  TS.C.size();
+  auto nThreads =  TS.C.size();
 
   for (auto tv = TS.C.begin(); tv != TS.C.end(); tv++) {
 
     ThreadState& t = tv->second;
-    for (int idx = t.C.size(); idx < nThreads; idx++) {
+    for (auto idx = t.C.size(); idx < nThreads; idx++) {
       int epoch = idx << 24;
       if (t.tid == idx) {
         epoch = epoch + 1;

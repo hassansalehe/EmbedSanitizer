@@ -30,7 +30,7 @@ TEST(FasttrackSyncTestFixture, ftAcquire) {
   EXPECT_EQ(max_num_threads, lock_state.L.size());
   EXPECT_EQ(thread_state.epoch, thread_state.C[thread_state.tid]);
 
-  for (int t = 0; t < thread_state.C.size(); ++t) {
+  for (std::size_t t = 0; t < thread_state.C.size(); ++t) {
     EXPECT_EQ((t << 24) + t, thread_state.C[t]);
   }
 }
@@ -52,7 +52,7 @@ TEST(FasttrackSyncTestFixture, ftRelease) {
   EXPECT_EQ(max_num_threads, lock_state.L.size());
   EXPECT_EQ(thread_state.epoch, thread_state.C[thread_state.tid]);
 
-  for (int t = 0; t < thread_state.C.size(); ++t) {
+  for (std::size_t t = 0; t < thread_state.C.size(); ++t) {
     if (t != thread_state.tid)
     {
       EXPECT_EQ(lock_state.L[t], thread_state.C[t]);
