@@ -93,7 +93,7 @@ TEST_F(RaceReportTestFixture, printStack) {
   ASSERT_NE(std::string::npos, stack_str.find(func_name2));
 }
 
-TEST_F(RaceReportTestFixture, reportRaceRead) {
+TEST_F(RaceReportTestFixture, reportRaceOnRead) {
   // create a call stack of 2 functions
   etsan::pushFunction(func_name1);
   etsan::pushFunction(func_name2);
@@ -103,7 +103,7 @@ TEST_F(RaceReportTestFixture, reportRaceRead) {
   auto cout_read_buffer = std::cout.rdbuf();
   std::cout.rdbuf(input_capture.rdbuf());
 
-  etsan::reportRaceRead(line_number, obj_name, file_name);
+  etsan::reportRaceOnRead(line_number, obj_name, file_name);
 
   EXPECT_NE(std::string::npos, input_capture.str().find(func_name1));
   EXPECT_NE(std::string::npos, input_capture.str().find(func_name2));
@@ -115,7 +115,7 @@ TEST_F(RaceReportTestFixture, reportRaceRead) {
   std::cout.rdbuf(cout_read_buffer);
 }
 
-TEST_F(RaceReportTestFixture, reportRaceWrite) {
+TEST_F(RaceReportTestFixture, reportRaceOnWrite) {
 
   // create a call stack of 2 functions
   etsan::pushFunction(func_name1);
@@ -126,7 +126,7 @@ TEST_F(RaceReportTestFixture, reportRaceWrite) {
   auto cout_read_buffer = std::cout.rdbuf();
   std::cout.rdbuf(input_capture.rdbuf());
 
-  etsan::reportRaceWrite(line_number, obj_name, file_name);
+  etsan::reportRaceOnWrite(line_number, obj_name, file_name);
 
   EXPECT_NE(std::string::npos, input_capture.str().find(func_name1));
   EXPECT_NE(std::string::npos, input_capture.str().find(func_name2));
