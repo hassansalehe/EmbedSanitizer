@@ -299,14 +299,14 @@ void __tsan_vptr_update(void **vptr_p, void *new_val,
 void __tsan_thread_create(void * childIdAddr) {
   unsigned int child_id = *((unsigned int*)childIdAddr);
   unsigned int parent_id = (unsigned int)pthread_self();
-  ft_fork( getThreadState(), getState(child_id) );
+  ft_fork( getState(parent_id), getState(child_id) );
 }
 
 void __tsan_thread_join(void * childIdAddr) {
 
   unsigned int child_id = reinterpret_cast<unsigned int>(childIdAddr);
   unsigned int parent_id = (unsigned int)pthread_self();
-  ft_join( getThreadState(), getState(child_id) );
+  ft_join( getState(parent_id), getState(child_id) );
 }
 
 void __tsan_thread_lock(void * lock) {

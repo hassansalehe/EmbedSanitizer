@@ -72,7 +72,6 @@ TEST(FasttrackWriteTestFixture, ftWriteDetectNewRace) {
 
 TEST(FasttrackWriteTestFixture, ftWriteCheckUpdateOnSharedRead) {
   VS.reads = 0;
-  constexpr bool race_found = true;
   constexpr unsigned int num_threads = 5;
   constexpr int tid = 3;
 

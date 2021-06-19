@@ -97,7 +97,7 @@ bool ft_write(VarState & x, ThreadState & t) {
       reportIsRacy = true;
     }
   } else {                       // Write Shared       0.1%
-    for (int u = 0; u < /*NumThreads*/std::min(x.Rvc.size(), t.C.size()); u++) {
+    for (std::size_t u = 0; u < /*NumThreads*/std::min(x.Rvc.size(), t.C.size()); u++) {
       if (x.Rvc[u] > t.C[u]) {// (SLOW PATH)
         reportIsRacy = true; // RACE!
       }
@@ -120,7 +120,7 @@ void ft_acquire(ThreadState& t, LockState& lock) {
   ExtendVectorClocks(t.C, lock.L);
 
   // Join: Ct := Ct U Lm
-  for (int i = 0; i < lock.L.size(); i++) {
+  for (std::size_t i = 0; i < lock.L.size(); i++) {
     t.C[i] = std::max(t.C[i], lock.L[i]);
   }
 
@@ -136,7 +136,7 @@ void ft_release(ThreadState& t, LockState& lock) {
   ExtendVectorClocks(t.C, lock.L);
 
   // Copy: Lm := Ct
-  for (int i = 0; i < lock.L.size(); i++) {
+  for (std::size_t i = 0; i < lock.L.size(); i++) {
     lock.L[i] = t.C[i];
   }
 
@@ -155,7 +155,7 @@ void ft_fork(ThreadState & t, ThreadState & u){
   ExtendVectorClocks(t.C, u.C);
 
   // Join: Cu := Cu U Ct
-  for (int i = 0; i < u.C.size(); i++) {
+  for (std::size_t i = 0; i < u.C.size(); i++) {
     u.C[i] = std::max(u.C[i], t.C[i]);
   }
 
@@ -180,7 +180,7 @@ void ft_join(ThreadState & t, ThreadState & u){
   ExtendVectorClocks(t.C, u.C);
 
   // Join: Ct := Ct U Cu
-  for (int i = 0; i < t.C.size(); i++) {
+  for (std::size_t i = 0; i < t.C.size(); i++) {
     t.C[i] = std::max(t.C[i], u.C[i]);
   }
 
