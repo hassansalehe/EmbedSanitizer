@@ -27,10 +27,8 @@
 #include "race.h"
 #include "file_dictionary.h"
 
-/**
- * Namespace which contains utility functions for manipulating data
- * race reporting metadata.
- */
+// Namespace which contains utility functions for manipulating data
+// race reporting metadata.
 namespace etsan {
 
 static std::mutex racePrintLock;
@@ -55,9 +53,7 @@ void printRaces() {
   racePrintLock.unlock();
 }
 
-/**
- * Pushes a function name to a call stack of a thread
- */
+// Pushes a function name to a call stack of a thread
 void pushFunction(char *funcName) {
 
   unsigned int tid = (unsigned int)pthread_self();
@@ -91,9 +87,7 @@ std::vector<char *> getStack(unsigned int tid) {
     return stackFrame;
 }
 
-/**
- * Prints the call stack of a thread when a race is found
- */
+// Prints the call stack of a thread when a race is found
 std::string printStack() {
 
   unsigned int tid = (unsigned int)pthread_self();
@@ -113,8 +107,7 @@ std::string printStack() {
   return ss.str();
 }
 
-/**
- * Report data race on a read operation. */
+// Report data race on a read operation
 void reportRaceRead(int lineNo, void *objName, void *fileName) {
 
   unsigned int tid = (unsigned int)pthread_self();
@@ -125,8 +118,7 @@ void reportRaceRead(int lineNo, void *objName, void *fileName) {
   printRaces();
 }
 
-/**
- * Report data race on a write operation. */
+// Report data race on a write operation
 void reportRaceWrite(int lineNo, void *objName, void *fileName) {
 
   unsigned int tid = (unsigned int)pthread_self();

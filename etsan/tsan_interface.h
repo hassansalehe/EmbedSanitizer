@@ -64,7 +64,7 @@ void __tsan_vptr_update(void **vptr_p, void *new_val ,
 void __tsan_vptr_read(void **vptr_p,
                       int lineNo, void* objName, void * fileName);
 
-/** Code adapted from tsan of LLVM*/
+// Code adapted from tsan of LLVM
 typedef char  __tsan_atomic8;
 typedef short __tsan_atomic16;  // NOLINT
 typedef int   __tsan_atomic32;

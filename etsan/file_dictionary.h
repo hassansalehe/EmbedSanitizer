@@ -19,10 +19,8 @@
 
 namespace etsan {
 
-/**
- * This class holds the list of files for debuggability of
- * races detected by EmbedSanitizer race detector.
- */
+// This class holds the list of files for debuggability of
+// races detected by EmbedSanitizer race detector.
 class FileDictionary {
   std::set<std::string> module_paths;
   std::unordered_set<char *> files;

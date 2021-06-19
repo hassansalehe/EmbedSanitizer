@@ -53,22 +53,17 @@ typedef std::vector<int> VectorClock;
 
 #define FastPathReturn { VS.mGuard.unlock(); return reportIsRacy;}
 
-/**
- * Maybe unnecessary but keeps track of
- * number of parallel threads in the program.
- * Invariant: NumThreads == C.size() */
+// Maybe unnecessary but keeps track of number of parallel
+// threads in the program. Invariant: NumThreads == C.size()
 static unsigned int NumThreads = 0;
 
-/**
- * This variable tracks availability
- * of multiple threads in the program. No race is
- * detected if there are no multithreads in the program */
+// This variable tracks availability of multiple threads in the program
+// No race is detected if there are no multithreads in the program
 std::atomic_int isConcurrent{0};
 
-/********************************************/
-/**   Thread state related metadata        **/
-/********************************************/
-
+//////////////////////////////////////////////
+/// Thread state related metadata           //
+//////////////////////////////////////////////
 class ThreadState {
   public:
     int tid;
@@ -83,16 +78,13 @@ class ThreadState {
     }
 };
 
-/*
- * This class holds states of all concurrent threads
- * in the system. I has a single lock for each thread
- * to acquire to access its thread states.
- */
+// This class holds states of all concurrent threads in the system.
+// Has a single lock for each thread for accessing its thread states
 class TStates {
 
 public:
 
-  /* A lock to acquire before accesing C */
+  // A lock to acquire before accesing thread states C
   std::mutex mGuard; // lock
 
   // Threads states
@@ -106,13 +98,9 @@ public:
 
 TStates TS; // instance for threads states
 
-/**
- * Updates vector clocks to accomodate vectors
- * of all threads.
- * NOTE: This is a utility function and thus
- * not protected. Use inside a critical section
- * with the TS lock.
- */
+// Updates vector clocks to accomodate vectors of all threads.
+// NOTE: This is a utility function and thus not protected.
+//       Use inside a critical section with the TS lock.
 void UpdateThreadClocks() {
 
   int nThreads =  TS.C.size();
@@ -130,9 +118,7 @@ void UpdateThreadClocks() {
   } // end for
 }
 
-/**
- * Returns the State of a thread whose id is tid
- */
+// Returns the State of a thread whose id is tid
 ThreadState & getState(ThreadID tid) {
 
   ThreadState* st;
@@ -158,19 +144,15 @@ ThreadState & getState(ThreadID tid) {
   return *st;
 }
 
-/**
- * Returns the State of the current thread
- */
+// Returns the State of the current thread
 ThreadState & getThreadState() {
   ThreadID tid = ( ThreadID )pthread_self();
   return getState(tid);
 }
 
-
-/********************************************/
-/** Variables states related metadata      **/
-/********************************************/
-
+//////////////////////////////////////////////
+/// Variables states related metadata       //
+//////////////////////////////////////////////
 class VarState {
   public:
     int W, R;
@@ -182,7 +164,7 @@ class VStates {
 
 public:
 
-  /* A lock to acquire before accesing Vstates */
+  // A lock to acquire before accesing VariableStates
   std::mutex mGuard;
 
   // Variables states
@@ -207,11 +189,8 @@ public:
 
 VStates VS; // instance for variables states
 
-/**
- * Returns VarState instance for a memory
- * address "addr". If none exists already,
- * it creates one and stores in Vstates.
- */
+// Returns VarState instance for a memory address "addr".
+// If none exists already, it creates one and stores in Vstates.
 VarState & getVarState(Address addr, bool isWrite) {
 
   VarState* vstt;
@@ -238,9 +217,9 @@ VarState & getVarState(Address addr, bool isWrite) {
   return *vstt;
 }
 
-/********************************************/
-/**   Locks state related metadata         **/
-/********************************************/
+//////////////////////////////////////////////
+/// Locks state related metadata          //
+//////////////////////////////////////////////
 class LockState {
   public:
     VectorClock L;
@@ -250,7 +229,7 @@ class LStates {
 
 public:
 
-  /* A lock to acquire before accesing L */
+  // A lock to acquire before accesing LockStates
   std::mutex mGuard;
 
   // Locks states
@@ -265,10 +244,8 @@ public:
 
 LStates LS; // instance for locks states metadata
 
-/**
- * Initializes clocks in the vector clock to 0
- * for all threads 0 ... size-1 for a vector clock VC
- */
+// Initializes clocks in the vector clock to 0
+// for all threads 0 ... size-1 for a vector clock VC
 void newVectorClock(VectorClock& VC, int size) {
   VC.resize( size );
   for (int t = 0; t < size; t++) {
@@ -276,10 +253,7 @@ void newVectorClock(VectorClock& VC, int size) {
   }
 }
 
-/**
- * Updates vector clock to accomodate epochs
- * of new dynamically created threads.
- */
+// Updates vector clock to accomodate epochs of new dynamically created threads
 void ExtendVectorClock(VectorClock& C, int totalThreads) {
 
   int tid = C.size();
@@ -289,11 +263,8 @@ void ExtendVectorClock(VectorClock& C, int totalThreads) {
   }
 }
 
-
-/**
- * Makes sure to extend two Vector clocks C1 and C2
- * to be of same length by appending zeros.
- */
+// Makes sure to extend two Vector clocks C1 and C2 to be of same
+// length by appending zeros.
 void ExtendVectorClocks(VectorClock& C1, VectorClock& C2) {
   int t_size = C1.size();
   int l_size = C2.size();
@@ -304,10 +275,7 @@ void ExtendVectorClocks(VectorClock& C1, VectorClock& C2) {
   ExtendVectorClock(C2, size);
 }
 
-/**
- * Returns vector clock state of a lock whose
- * address is "lock"
- */
+// Returns vector clock state of a lock whose address is "lock"
 LockState& getLockState(Address lock) {
 
   LockState* lockS;
