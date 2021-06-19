@@ -27,7 +27,7 @@ int main() {
     t.C.push_back((i << 24) + (rand() % 10));
   }
 
-  t.epoch = t.tid << 24 + 1;
+  t.epoch = (t.tid << 24) + 1;
   t.C[t.tid] = t.epoch;
 
   LockState Lm;
