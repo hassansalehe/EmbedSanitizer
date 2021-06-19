@@ -13,7 +13,7 @@
 
 #include <thread>
 
-#include "etsan/raceReport.h"
+#include "etsan/race_report.h"
 
 class RaceReportTestFixture : public ::testing::Test {
 protected:

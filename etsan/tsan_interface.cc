@@ -13,7 +13,7 @@
 
 #include "tsan_interface.h"
 #include "fasttrack.h"
-#include "raceReport.h"
+#include "race_report.h"
 #include "defs.h"
 
 typedef unsigned long uptr; // NOLINT
