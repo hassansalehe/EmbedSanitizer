@@ -107,8 +107,7 @@ std::string printStack() {
   return ss.str();
 }
 
-// Report data race on a read operation
-void reportRaceRead(int lineNo, void *objName, void *fileName) {
+void reportRaceOnRead(int lineNo, void *objName, void *fileName) {
 
   unsigned int tid = (unsigned int)pthread_self();
   Race race(tid, lineNo, "read", (char *)objName, (char *)fileName);
@@ -118,8 +117,7 @@ void reportRaceRead(int lineNo, void *objName, void *fileName) {
   printRaces();
 }
 
-// Report data race on a write operation
-void reportRaceWrite(int lineNo, void *objName, void *fileName) {
+void reportRaceOnWrite(int lineNo, void *objName, void *fileName) {
 
   unsigned int tid = (unsigned int)pthread_self();
   Race race(tid, lineNo, "write", (char *)objName, (char *)fileName);

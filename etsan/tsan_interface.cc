@@ -39,7 +39,7 @@ void __tsan_read1(void* addr,
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
   //  MemoryRead(cur_thread(), CALLERPC, (uptr)addr, kSizeLog1);
@@ -53,7 +53,7 @@ void __tsan_read2(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -66,7 +66,7 @@ void __tsan_read4(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -79,7 +79,7 @@ void __tsan_read8(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -92,7 +92,7 @@ void __tsan_read16(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -105,7 +105,7 @@ void __tsan_write1(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -117,7 +117,7 @@ void __tsan_write2(void * addr,
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -131,7 +131,7 @@ void __tsan_write4(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -144,7 +144,7 @@ void __tsan_write8(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -157,7 +157,7 @@ void __tsan_write16(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -172,7 +172,7 @@ void __tsan_unaligned_read2(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -186,7 +186,7 @@ void __tsan_unaligned_read4(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -199,7 +199,7 @@ void __tsan_unaligned_read8(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -212,7 +212,7 @@ void __tsan_unaligned_read16(
   if (isConcurrent) {
     bool isRace = ft_read( getVarState(addr, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceRead( lineNo, objName, fileName );
+      etsan::reportRaceOnRead( lineNo, objName, fileName );
     }
   }
 }
@@ -225,7 +225,7 @@ void __tsan_unaligned_write2(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -238,7 +238,7 @@ void __tsan_unaligned_write4(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -251,7 +251,7 @@ void __tsan_unaligned_write8(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -264,7 +264,7 @@ void __tsan_unaligned_write16(
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(addr, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -277,7 +277,7 @@ void __tsan_vptr_read(void **vptr_p,
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(vptr_p, false), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }
@@ -289,7 +289,7 @@ void __tsan_vptr_update(void **vptr_p, void *new_val,
   if (isConcurrent) {
     bool isRace = ft_write( getVarState(vptr_p, true), getThreadState() );
     if ( isRace ) {
-      etsan::reportRaceWrite( lineNo, objName, fileName );
+      etsan::reportRaceOnWrite( lineNo, objName, fileName );
     }
   }
 }

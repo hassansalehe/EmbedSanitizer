@@ -149,7 +149,7 @@ TEST_P(TsanInterfaceTestFixture, CheckTsanUNALIGNEDreadWithConcurrencyAndRace) {
   }
 }
 
-INSTANTIATE_TEST_SUITE_P(AnotherInstantiationName,
+INSTANTIATE_TEST_SUITE_P(ParamTest,
                          TsanInterfaceTestFixture,
                          ::testing::ValuesIn({1, 2, 4, 8, 16}),
                          testing::PrintToStringParamName());

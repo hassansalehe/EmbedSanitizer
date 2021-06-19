@@ -25,9 +25,9 @@
 #include <atomic>
 #include <algorithm>
 
-typedef const void * Address;
-typedef unsigned int ThreadID;
-typedef std::vector<int> VectorClock;
+using Address     = const void *;
+using ThreadID    = unsigned int;
+using VectorClock = std::vector<int>;
 
 #define TID(x) ((x & 0xFF000000) >> 24)
 #define CLOCK(x) (x & (0x00FFFFFF))
