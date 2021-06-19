@@ -18,12 +18,10 @@
 bool ft_read(VarState & x, ThreadState & t);
 bool ft_write(VarState & x, ThreadState & t);
 
-/**
- * Performs race detection at read event
- * @param x memory address state
- * @param t state of the thread which performed read operation
- * @return true if there is a race, false otherwise.
- */
+// Performs race detection at read event
+// @param x memory address state
+// @param t state of the thread which performed read operation
+// @return true if there is a race, false otherwise.
 bool ft_read(VarState & x, ThreadState & t) {
 
   bool reportIsRacy = false;
@@ -71,12 +69,10 @@ bool ft_read(VarState & x, ThreadState & t) {
   return reportIsRacy;
 }
 
-/**
- * Performs race detection on write event
- * @param x memory address state
- * @param t state of the thread which performed read operation
- * @return true if there is a race, false otherwise.
- */
+// Performs race detection on write event
+// @param x memory address state
+// @param t state of the thread which performed read operation
+// @return true if there is a race, false otherwise.
 bool ft_write(VarState & x, ThreadState & t) {
 
   bool reportIsRacy = false;
@@ -193,7 +189,6 @@ void ft_join(ThreadState & t, ThreadState & u){
 
   TS.mGuard.unlock(); // release protection
 }
-
 
 void ft_atomic_load() {
   printf("EmbedSanitizer: Warning, atomic load not implemented!\n");

@@ -31,9 +31,7 @@ void __tsan_main_func_exit() {
   etsan::printRaces();
 }
 
-/*
- * 1. Callbacks for memory accesses
- */
+// 1. Callbacks for memory accesses
 void __tsan_read1(void* addr,
        int lineNo,
        void * objName,
@@ -165,9 +163,7 @@ void __tsan_write16(
 }
 
 
-/**
- * 2. Callbacks for unaligned memory accesses
- */
+// 2. Callbacks for unaligned memory accesses
 void __tsan_unaligned_read2(
        const void *addr,
        int lineNo,
@@ -273,9 +269,7 @@ void __tsan_unaligned_write16(
   }
 }
 
-/**
- * 3. Callbacks for virtual pointer accesses
- */
+// 3. Callbacks for virtual pointer accesses
 void __tsan_vptr_read(void **vptr_p,
        int lineNo,
        void * objName,
@@ -301,9 +295,7 @@ void __tsan_vptr_update(void **vptr_p, void *new_val,
 }
 
 
-/**
- * 4. Callbacks for synchronization events
- */
+// 4. Callbacks for synchronization events
 void __tsan_thread_create(void * childIdAddr) {
   unsigned int child_id = *((unsigned int*)childIdAddr);
   unsigned int parent_id = (unsigned int)pthread_self();

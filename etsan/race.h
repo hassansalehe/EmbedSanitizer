@@ -15,9 +15,7 @@
 #ifndef ETSAN_RACE_H_
 #define ETSAN_RACE_H_
 
-/**
- * This class saves information of race reported by the tool
- */
+// This class saves information of race reported by the tool
 class Race {
 
 public:
@@ -27,8 +25,9 @@ public:
   std::string           objName;
   std::string           fileName;
   std::vector<char *>   trace;
-  bool                  isMessageCreated; /* if true don't construct the string
-                                             for printing. */
+
+  // if true don't construct the string for printing
+  bool                  isMessageCreated;
 
   Race(unsigned int _tid,
        int _lineNo,
@@ -45,25 +44,18 @@ public:
     isMessageCreated = false;
   }
 
-  /*
-  bool operator==(Race &rhs) {
 
-    if(lineNo != rhs.lineNo)
-      return false;
+// bool operator==(Race &rhs) {
+//   if(lineNo != rhs.lineNo)
+//     return false;
+//   if(accessType != rhs.accessType)
+//     return false;
+//   if(fileName != rhs.fileName)
+//     return false;
+//   return true;
+// }
 
-    if(accessType != rhs.accessType)
-      return false;
-
-    if(fileName != rhs.fileName)
-      return false;
-
-    return true;
-  }
- */
-
-  /**
-   * Prints the call stack of a thread when a race is found
-   */
+  // Prints the call stack of a thread when a race is found
   std::string printStack() const {
 
     std::stringstream ss;
@@ -78,9 +70,8 @@ public:
     return ss.str();
   }
 
-  /**
-   * Constructs a nicely reading message about the race
-   * and stores the result in "msg" string. */
+  // Constructs a nicely reading message about the race
+  // and stores the result in "msg" string
   bool createRaceMessage(std::string &msg) {
     if (true == isMessageCreated) {
       return true; // already created before
@@ -105,8 +96,7 @@ public:
   }
 };
 
-/** Comparison functor for comparing between two race reports
- */
+// Comparison functor for comparing between two race reports
 struct race_compare {
   bool operator() (const Race& lhs, const Race& rhs) const {
 
