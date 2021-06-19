@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <set>
 #include "race.h"
-#include "fileDictionary.h"
+#include "file_dictionary.h"
 
 /**
  * Namespace which contains utility functions for manipulating data
