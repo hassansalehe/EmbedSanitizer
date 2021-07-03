@@ -2,14 +2,14 @@
 
 #########################################################################
 #
-# Copyright (c) 2017, 2018 - Hassan Salehe Matar
+# Copyright (c) 2017 - 2021, Hassan Salehe Matar
 #
 #  License: Follows License of LLVM/Clang. Read the license file Licence.md
 #
 #########################################################################
 
 # clone release version 4.0 of LLVM/Clang
-version=4.0.0
+version=4.0.1
 EsanHomeDir=`pwd`
 
 BuildDir=$EsanHomeDir/build
@@ -35,7 +35,7 @@ Usage() {
   echo "    --clean  : cleans the whole installation"
   echo "    --new    : For a complete new installation"
   echo ""
-  echo " (c) 2017 - 2018, Hassan Salehe Matar"
+  echo " (c) 2017 - 2021, Hassan Salehe Matar"
   echo " See LICENSE.md for license information."
 }
 
