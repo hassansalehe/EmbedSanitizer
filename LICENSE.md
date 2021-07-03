@@ -1,6 +1,6 @@
 EmbedSanitizer License
 
-Copyright (c) 2017 - 2018, Hassan Salehe Matar
+Copyright (c) 2017 - 2021  Hassan Salehe Matar
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

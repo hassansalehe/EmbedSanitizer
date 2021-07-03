@@ -1,3 +1,14 @@
+/////////////////////////////////////////////////////
+//
+// Copyright (c) 2017 - 2021  Hassan Salehe Matar
+//
+// See LICENSE file for information about the license.
+//
+//
+// Unit tests for race.h.
+//
+////////////////////////////////////////////////////
+
 #include <gtest/gtest.h>
 
 #include <memory>

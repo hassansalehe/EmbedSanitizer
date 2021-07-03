@@ -7,8 +7,9 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// (c) 2017, 2018 - Hassan Salehe Matar, Koc University
-//            Email: hmatar@ku.edu.tr
+// (c) 2017 - 2021  Hassan Salehe Matar, Koc University
+//            Email: hassansalehe@gmail.com
+//
 //===----------------------------------------------------------------------===//
 
 

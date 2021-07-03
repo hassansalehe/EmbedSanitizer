@@ -2,7 +2,7 @@
 
 #########################################################################
 #
-# Copyright (c) 2017, 2018 - Hassan Salehe Matar
+# Copyright (c) 2017 - 2021 Hassan Salehe Matar
 #
 #  License: Follows License of LLVM/Clang. Read the licence file LICENSE.md
 #

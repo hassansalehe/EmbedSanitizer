@@ -1,5 +1,5 @@
 ################################################
-# Copyright (c) 2017 - 2018, Hassan Salehe Matar
+# Copyright (c) 2017 - 2021  Hassan Salehe Matar
 #
 # This file contains necessary compiler, linker,
 # and include flags for compiling the streamcluster
