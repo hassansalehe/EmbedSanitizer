@@ -1,9 +1,8 @@
 /////////////////////////////////////////////////////
 //
-// Copyright (c) 2017 - 2021, Hassan Salehe Matar
+// Copyright (c) 2017 - 2021  Hassan Salehe Matar
 //
 // See LICENSE file for information about the license.
-//
 //
 // Unit tests for syncronization functions of fasttrack.
 //
