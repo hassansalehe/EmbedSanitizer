@@ -35,7 +35,7 @@ Usage() {
   echo "    --clean  : cleans the whole installation"
   echo "    --new    : For a complete new installation"
   echo ""
-  echo " (c) 2017 - 2021, Hassan Salehe Matar"
+  echo " (c) 2017 - 2021  Hassan Salehe Matar"
   echo " See LICENSE.md for license information."
 }
 
