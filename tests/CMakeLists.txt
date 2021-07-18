@@ -21,7 +21,7 @@ add_executable(fasttrack_write_test fasttrack_write_test.cpp)
 add_executable(fasttrack_sync_test fasttrack_sync_test.cpp)
 add_executable(race_test race_test.cpp)
 add_executable(race_report_test race_report_test.cpp)
-add_executable(tsan_interface_test tsan_interface_test.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../etsan/tsan_interface.cc)
+add_executable(tsan_interface_test tsan_interface_test.cpp tsan_interface_vptr_test.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../etsan/tsan_interface.cc)
 
 add_executable(lock_acquire_test LockAcquire.cpp)
 add_executable(lock_release_test LockRelease.cpp)
